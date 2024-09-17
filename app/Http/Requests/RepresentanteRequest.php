@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class UserRequest extends FormRequest
+class RepresentanteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,24 +23,30 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        $rules= [
             'name' => ['required', 'min:3','string', 'max:20'],
             'apellido' => ['required', 'string', 'max:20','min:3'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'admin' => ['required', 'boolean']
+            'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:representantes'],
+            'telefono' => 'required|regex:/^[0-9]{11}$/',
+            'ciudad' => ['required', 'string', 'max:35', 'min:3'],
+            'direccion' => ['required', 'string', 'max:255', 'min:3'],
         ];
-    
+
         if ($this->isMethod('patch') || $this->isMethod('put')) {
             $rules = [
                 'name' => ['sometimes', 'string', 'max:20', 'min:3'],
                 'apellido' => ['sometimes', 'string', 'max:20', 'min:3'],
-                'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $this->route('user')], // Verifica que el email sea único en la tabla 'users', excepto para el usuario actual
+                'email' => ['sometimes', 'email', 'max:255', 'unique:representantes,email,' . $this->route('representante')],
                 'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
-                'admin' => ['sometimes', 'boolean']
+                'cedula' => ['sometimes','regex:/^[0-9]{6,9}$/', 'unique:representantes,cedula,' . $this->route('representante')] ,
+                'telefono' => 'sometimes|regex:/^[0-9]{11}$/',
+                'ciudad' => ['sometimes', 'string', 'max:35', 'min:3'],
+                'direccion' => ['sometimes', 'string', 'max:255', 'min:3'], 
             ];
         }
-    
+
         return $rules;
     }
 
@@ -56,14 +62,24 @@ class UserRequest extends FormRequest
             'apellido.required' => 'El apellido es requerido',
             'apellido.max' => 'El apellido debe tener un tamaño máximo de 20 caracteres',
             'email.required' => 'El correo electrónico es requerido',
+            'email.unique' => 'El correo electrónico ya esta registrado',
+            'email.email' => 'El correo electrónico debe ser un correo válido',
             'password.required' => 'La contraseña es requerida',
-            'admin.required' => 'El rol es requerido',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres',
             'password.confirmed' => 'La confirmación de la contraseña no coincide',
-            'email.unique' => 'El correo electrónico ya se encuentra registrado',
-            'admin.boolean' => 'El rol debe ser verdadero o falso',
-            'email.email' => 'El correo electrónico no es válido',
-            'email.max' => 'El correo electrónico debe tener un tamaño máximo de 255 caracteres',
+            'cedula.required' => 'La cédula es requerida',
+            'cedula.regex' => 'La cédula debe tener minimo 6 numeros y maximo 10',
+            'cedula.unique' => 'La cédula ya esta registrada',
+            'telefono.required' => 'El teléfono es requerido',
+            'telefono.regex' => 'El teléfono debe ser un valor numérico',
+            'ciudad.required' => 'La ciudad es requerida',
+            'ciudad.min' => 'La ciudad debe tener al menos 3 caracteres',
+            'ciudad.max' => 'La ciudad debe tener un tamaño máximo de 35 caracteres',
+            'ciudad.string' => 'La ciudad es requerida',
+            'direccion.required' => 'La dirección es requerida',
+            'direccion.min' => 'La dirección debe tener al menos 3 caracteres',
+            'direccion.max' => 'La dirección debe tener un tamaño máximo de 255 caracteres',
+            'direccion.string' => 'La dirección es requerida',
 
         ];
     }
