@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class Representante extends Model
+class Representante extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory,HasApiTokens;
     protected $fillable=['name','apellido','email','cedula','password','telefono','ciudad','direccion'];
 
     public function estudiantes()
