@@ -26,7 +26,7 @@ class RepresentanteRequest extends FormRequest
         $rules= [
             'name' => ['required', 'min:3','string', 'max:20'],
             'apellido' => ['required', 'string', 'max:20','min:3'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:representantes'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:representantes'],
             'telefono' => 'required|regex:/^[0-9]{11}$/',

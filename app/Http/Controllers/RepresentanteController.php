@@ -20,29 +20,6 @@ class RepresentanteController extends Controller
         return RepresentanteResource::collection(Representante::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(RepresentanteRequest $request)
-    {
-        $request->validated();
-        $representante = new Representante;
-        $representante->name = $request->name;
-        $representante->apellido = $request->apellido;
-        $representante->email = $request->email;
-        $representante->password = bcrypt($request->password);
-        $representante->cedula = $request->cedula;
-        $representante->telefono = $request->telefono;
-        $representante->ciudad = $request->ciudad;
-        $representante->direccion = $request->direccion;
-        $representante->save();
-
-        return response()->json($representante, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         try {
