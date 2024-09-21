@@ -9,6 +9,7 @@ use App\Http\Resources\RepresentanteResource;
 use App\Models\Representante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -31,20 +32,35 @@ class AuthController extends Controller
             'representante' => new RepresentanteResource($representante),
             'token' => $representante->createToken('token')->plainTextToken ], 201);
     }
-    public function login(LoginRequest $request){
-
-        $data= $request->validated();
-        if(!Auth::guard('representante')->attempt($data)){
-            return response([
-                'errors' => ['Credenciales incorrectas']
-            ],422);
+    public function login(LoginRequest $request)
+    {
+        $data = $request->validated();
+    
+        // Intentar encontrar al representante
+        $representante = Representante::where('email', $data['email'])->first();
+    
+        if (!$representante || !Hash::check($data['password'], $representante->password)) {
+            return response()->json(['fail' => ['Credenciales incorrectas']], 422);
         }
-        $representante = Auth::guard('representante')->user();
-        return [
+    
+        // Si las credenciales son válidas, generar un token
+        return response()->json([
             'token' => $representante->createToken('token')->plainTextToken,
             'representante' => new RepresentanteResource($representante)
-        ];
-
+        ]);
     }
+
+    public function logout(Request $request)
+    {
+        //borrando el token
+        $user = $request->user();
+        $user->currentAccessToken()->delete();
+        return [
+            'user' => null
+        ];
+        
+    }
+    
+    
     
 }
