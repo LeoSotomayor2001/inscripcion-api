@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\RepresentanteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/logout-representante', [AuthController::class, 'logout']);     
         
     });
+    Route::apiResource('/estudiantes', EstudianteController::class);
 })->middleware('auth:sanctum');
 
 
