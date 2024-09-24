@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\odel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ActualizarRepresentanteRequest;
-use App\Http\Requests\RepresentanteRequest;
+
 use App\Http\Resources\RepresentanteResource;
 use App\Models\Representante;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

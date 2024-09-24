@@ -9,7 +9,7 @@ class Estudiante extends Model
 {
     use HasFactory;
 
-    protected $fillable=['name','apellido','cedula','fecha_nacimiento','representante_id'];
+    protected $fillable=['name','apellido','cedula','fecha_nacimiento','representante_id','image'];
 
     public function representante()
     {

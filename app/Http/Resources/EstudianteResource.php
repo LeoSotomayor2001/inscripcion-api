@@ -21,6 +21,7 @@ class EstudianteResource extends JsonResource
             'cedula' => $this->cedula,
             'fecha_nacimiento' => $this->fecha_nacimiento,
             'representante' => new RepresentanteResource($this->whenLoaded('representante')),
+            'image' => $this->image
         ];
     }
 }
