@@ -27,7 +27,7 @@ class EstudianteRequest extends FormRequest
             'name' => ['required', 'min:3','string', 'max:20'],
             'apellido' => ['required', 'string', 'max:20','min:3'],
             'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:estudiantes'],
-            'fecha_nacimiento' => 'required|date_format:d-m-Y',
+            'fecha_nacimiento' => 'required|date_format:d-m-Y|before:today',
 
         ];
     }
@@ -48,6 +48,7 @@ class EstudianteRequest extends FormRequest
             'fecha_nacimiento.required' => 'La fecha de nacimiento es requerida',
             'fecha_nacimiento.date' => 'La fecha de nacimiento debe ser una fecha válida',
             'fecha_nacimiento.date_format' => 'La fecha de nacimiento debe tener el formato dd-mm-aaaa',
+            'fecha_nacimiento.before' => 'La fecha de nacimiento debe ser anterior a la fecha actual',
         ];
     }
     protected function failedValidation(Validator $validator)

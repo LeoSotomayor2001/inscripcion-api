@@ -26,26 +26,14 @@ class RepresentanteRequest extends FormRequest
         $rules= [
             'name' => ['required', 'min:3','string', 'max:20'],
             'apellido' => ['required', 'string', 'max:20','min:3'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:representantes'],
+            'email' => ['required', 'email', 'max:255', 'unique:representantes,email,'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:representantes'],
             'telefono' => 'required|regex:/^[0-9]{11}$/',
             'ciudad' => ['required', 'string', 'max:35', 'min:3'],
             'direccion' => ['required', 'string', 'max:255', 'min:3'],
+            'image' => 'image|max:2048|mimes:jpeg,png,jpg,gif,svg',
         ];
-
-        if ($this->isMethod('patch') || $this->isMethod('put')) {
-            $rules = [
-                'name' => ['sometimes', 'string', 'max:20', 'min:3'],
-                'apellido' => ['sometimes', 'string', 'max:20', 'min:3'],
-                'email' => ['sometimes', 'email', 'max:255', 'unique:representantes,email,' . $this->route('representante')],
-                'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
-                'cedula' => ['sometimes','regex:/^[0-9]{6,9}$/', 'unique:representantes,cedula,' . $this->route('representante')] ,
-                'telefono' => 'sometimes|regex:/^[0-9]{11}$/',
-                'ciudad' => ['sometimes', 'string', 'max:35', 'min:3'],
-                'direccion' => ['sometimes', 'string', 'max:255', 'min:3'], 
-            ];
-        }
 
         return $rules;
     }

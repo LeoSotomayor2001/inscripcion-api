@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Representante extends Authenticatable
 {
     use HasFactory,HasApiTokens;
-    protected $fillable=['name','apellido','email','cedula','password','telefono','ciudad','direccion'];
+    protected $fillable=['name','apellido','email','cedula','password','telefono','ciudad','direccion','image'];
 
     public function estudiantes()
     {

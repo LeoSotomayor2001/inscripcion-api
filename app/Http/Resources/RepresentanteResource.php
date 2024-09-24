@@ -22,7 +22,8 @@ class RepresentanteResource extends JsonResource
             'email' => $this->email,
             'telefono' => $this->telefono,
             'ciudad' => $this->ciudad,
-            'direccion' => $this->direccion
+            'direccion' => $this->direccion,
+            'image' => $this->image
         ];
     }
 }

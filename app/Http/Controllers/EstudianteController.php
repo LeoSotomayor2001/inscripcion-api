@@ -31,7 +31,8 @@ class EstudianteController extends Controller
             'representante_id' => $request->representante_id,
         ]);
     
-        return response()->json(['estudiante' => new EstudianteResource($estudiante)], 201);
+        return response()->json([
+            'message' => 'Estudiante creado correctamente'], 201);
     }
     
 }
