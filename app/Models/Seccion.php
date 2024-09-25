@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Seccion extends Model
 {
     use HasFactory;
-    protected $table='secciones';
-    protected $fillable=['name','capacidad'];
+    protected $table = 'secciones';
+    protected $fillable = ['name', 'capacidad'];
 
     public function inscripciones()
     {
         return $this->hasMany(Inscripcion::class);
+    }
+
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
     }
 }

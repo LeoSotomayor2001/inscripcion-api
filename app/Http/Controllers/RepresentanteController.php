@@ -60,6 +60,18 @@ class RepresentanteController extends Controller
         }
         
     }
+
+    public function getEstudiantes(string $id){
+        try {
+            
+            $representante = Representante::findOrFail($id);
+            $estudiantes = $representante->estudiantes;
+            return response()->json(['estudiantes' => $estudiantes], 200);
+        }
+        catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Representante no encontrado'], 404);
+        }
+    }
     
     public function destroy(string $id)
     {
