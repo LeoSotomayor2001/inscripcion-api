@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ActualizarRepresentanteRequest;
 
 use App\Http\Resources\RepresentanteResource;
+use App\Models\Inscripcion;
 use App\Models\Representante;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class RepresentanteController extends Controller
 
     public function update(ActualizarRepresentanteRequest $request, Representante $representante)
     {
-        
+
         $data = $request->all();
         try {
             // Verificar si se está subiendo una nueva imagen
@@ -42,37 +43,53 @@ class RepresentanteController extends Controller
                 if ($representante->image) {
                     Storage::disk('public')->delete('imagenes/' . $representante->image);
                 }
-    
+
                 // Almacenar la nueva imagen
                 $imagePath = $request->file('image')->store('imagenes', 'public');
                 $imageName = basename($imagePath);
                 $data['image'] = $imageName;
             }
-    
+
             // Actualizar los datos del representante
             $representante->update($data);
-    
+
             // Retornar el recurso con un código de éxito
             return response()->json(['representante' => new RepresentanteResource($representante)], 200);
         } catch (\Exception $e) {
             // Manejo genérico de excepciones
             return response()->json(['error' => 'Error al actualizar el representante'], 500);
         }
-        
     }
 
-    public function getEstudiantes(string $id){
+    public function getEstudiantes(string $id)
+    {
         try {
-            
+
             $representante = Representante::findOrFail($id);
             $estudiantes = $representante->estudiantes;
             return response()->json(['estudiantes' => $estudiantes], 200);
-        }
-        catch (ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Representante no encontrado'], 404);
         }
     }
-    
+
+    public function obtenerEstudiantesPreinscritos($representanteId)
+    {
+        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year'])
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->whereHas('estudiante', fn($query) => $query->where('representante_id', $representanteId))
+            ->get()
+            ->map(fn($inscripcion) => [
+                'nombre' => $inscripcion->estudiante->name,
+                'apellido' => $inscripcion->estudiante->apellido,
+                'seccion' => $inscripcion->seccion->name,
+                'año' => "{$inscripcion->year->year} - {$inscripcion->year->descripcion}",
+                'estado' => $inscripcion->estado,
+            ]);
+
+        return response()->json(['inscripciones' => $inscripciones]);
+    }
+
     public function destroy(string $id)
     {
         try {

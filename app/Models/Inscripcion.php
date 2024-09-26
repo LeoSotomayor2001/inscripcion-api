@@ -20,7 +20,7 @@ class Inscripcion extends Model
         return $this->belongsTo(Seccion::class);
     }
 
-    public function ano()
+    public function year()
     {
         return $this->belongsTo(Year::class);
     }

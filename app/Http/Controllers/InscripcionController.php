@@ -46,6 +46,7 @@ class InscripcionController extends Controller
         return response()->json(['mensaje' => 'Preinscripción realizada correctamente.']);
     }
 
+   
 
 
     // Confirmación de inscripción
