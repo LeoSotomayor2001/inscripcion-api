@@ -79,19 +79,33 @@ class EstudianteController extends Controller
 
     public function destroy(Request $request, Estudiante $estudiante)
     {
+        // Verificar si el estudiante tiene inscripciones confirmadas o pendientes
+        $inscripcionExistente = $estudiante->inscripciones()
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->first();
+    
+        // Si existe una inscripción con estado pendiente o confirmada, no se permite la eliminación
+        if ($inscripcionExistente) {
+            return response()->json([
+                'mensaje' => 'No se puede eliminar el estudiante porque tiene una inscripción pendiente o confirmada.'
+            ], 400);
+        }
+    
+        // Ruta de la imagen a eliminar
         $path = "imagenes/{$estudiante->image}";
-
+    
         // Verificar y eliminar la imagen si existe
         if (Storage::disk('public')->exists($path)) {
             Storage::disk('public')->delete($path);
         }
-
+    
         // Eliminar el estudiante usando el método delete()
         $estudiante->delete();
-
+    
         // Retornar respuesta JSON indicando que el estudiante fue eliminado
         return response()->json([
             'mensaje' => 'Estudiante eliminado correctamente'
         ], 200);
     }
+    
 }
