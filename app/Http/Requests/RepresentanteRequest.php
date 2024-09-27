@@ -24,8 +24,8 @@ class RepresentanteRequest extends FormRequest
     public function rules(): array
     {
         $rules= [
-            'name' => ['required', 'min:3','string', 'max:20'],
-            'apellido' => ['required', 'string', 'max:20','min:3'],
+            'name' => ['required', 'min:3','string', 'max:30'],
+            'apellido' => ['required', 'string', 'max:30','min:3'],
             'email' => ['required', 'email', 'max:255', 'unique:representantes,email,'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:representantes'],
@@ -43,12 +43,12 @@ class RepresentanteRequest extends FormRequest
         return [
             'name.required' => 'El nombre es requerido',
             'name.min' => 'El nombre debe tener al menos 3 caracteres',
-            'name.max' => 'El nombre debe tener un tamaño máximo de 20 caracteres',
+            'name.max' => 'El nombre debe tener un tamaño máximo de 30 caracteres',
             'name.string' => 'El nombre es requerido',
             'apellido.min' => 'El apellido debe tener al menos 3 caracteres',
             'apellido.string' => 'El apellido es requerido',
             'apellido.required' => 'El apellido es requerido',
-            'apellido.max' => 'El apellido debe tener un tamaño máximo de 20 caracteres',
+            'apellido.max' => 'El apellido debe tener un tamaño máximo de 30 caracteres',
             'email.required' => 'El correo electrónico es requerido',
             'email.unique' => 'El correo electrónico ya esta registrado',
             'email.email' => 'El correo electrónico debe ser un correo válido',

@@ -54,7 +54,7 @@ class RepresentanteController extends Controller
             $representante->update($data);
 
             // Retornar el recurso con un código de éxito
-            return response()->json(['representante' => new RepresentanteResource($representante)], 200);
+            return response()->json(['mensaje' => 'Representante actualizado correctamente'], 200);
         } catch (\Exception $e) {
             // Manejo genérico de excepciones
             return response()->json(['error' => 'Error al actualizar el representante'], 500);
