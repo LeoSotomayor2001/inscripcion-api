@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    
-    public function register(RepresentanteRequest $request){
+
+    public function register(RepresentanteRequest $request)
+    {
         $request->validated();
         $representante = new Representante;
         $representante->name = $request->name;
@@ -28,27 +29,31 @@ class AuthController extends Controller
         $representante->save();
 
         return response()->json([
-            'message'=> 'Registrado correctamente',
+            'message' => 'Registrado correctamente',
             'representante' => new RepresentanteResource($representante),
-            'token' => $representante->createToken('token')->plainTextToken ], 201);
+            'token' => $representante->createToken('token')->plainTextToken
+        ], 201);
     }
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
-    
+
         // Intentar encontrar al representante
         $representante = Representante::where('email', $data['email'])->first();
-    
+
         if (!$representante || !Hash::check($data['password'], $representante->password)) {
             return response()->json(['fail' => ['Credenciales incorrectas']], 422);
         }
-    
-        // Si las credenciales son válidas, generar un token
+
+        // Si no hay sesión activa, generar un nuevo token
+        $token = $representante->createToken('token')->plainTextToken;
+
         return response()->json([
-            'token' => $representante->createToken('token')->plainTextToken,
+            'token' => $token,
             'representante' => new RepresentanteResource($representante)
         ]);
     }
+
 
     public function logout(Request $request)
     {
@@ -58,9 +63,5 @@ class AuthController extends Controller
         return [
             'mensaje' => 'Cierre de sesión exitoso'
         ];
-        
     }
-    
-    
-    
 }

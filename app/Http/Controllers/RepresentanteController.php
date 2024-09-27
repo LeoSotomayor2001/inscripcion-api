@@ -54,10 +54,10 @@ class RepresentanteController extends Controller
             $representante->update($data);
 
             // Retornar el recurso con un código de éxito
-            return response()->json(['mensaje' => 'Representante actualizado correctamente'], 200);
+            return response()->json(['mensaje' => 'Datos actualizados correctamente'], 200);
         } catch (\Exception $e) {
             // Manejo genérico de excepciones
-            return response()->json(['error' => 'Error al actualizar el representante'], 500);
+            return response()->json(['error' => 'Error al actualizar los datos'], 500);
         }
     }
 
@@ -83,7 +83,7 @@ class RepresentanteController extends Controller
                 'nombre' => $inscripcion->estudiante->name,
                 'apellido' => $inscripcion->estudiante->apellido,
                 'seccion' => $inscripcion->seccion->name,
-                'año' => "{$inscripcion->year->year} - {$inscripcion->year->descripcion}",
+                'año' => "{$inscripcion->year->year}",
                 'estado' => $inscripcion->estado,
             ]);
 
