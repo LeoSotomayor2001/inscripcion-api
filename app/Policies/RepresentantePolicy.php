@@ -2,30 +2,66 @@
 
 namespace App\Policies;
 
-
-use App\Models\Representante;
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use App\Models\Representante;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class RepresentantePolicy
 {
-    use HandlesAuthorization;
     /**
-     * Create a new policy instance.
+     * Determine whether the user can view any models.
      */
-    public function __construct()
+    public function viewAny(User $user): bool
     {
         //
     }
 
-
-    public function update(Representante $representante)
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, Representante $representante): bool
     {
-        $user = Auth::user();
-        
-        return $user->id === $representante->id
-            ? Response::allow()
-            : Response::deny('No puedes actualizar este representante.');
+        //
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(Representante $representante): bool
+    {
+        return Auth::user()->id === $representante->id;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Representante $representante): bool
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Representante $representante): bool
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Representante $representante): bool
+    {
+        //
     }
 }

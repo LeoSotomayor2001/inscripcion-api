@@ -16,9 +16,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout-representante', [AuthController::class, 'logout']);
     Route::post('/inscripciones/{inscripcion}', [InscripcionController::class, 'confirmarInscripcion']);
     Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
-    Route::post('/representantes/{representante}', [RepresentanteController::class, 'update']);
     Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);
     Route::get('/representantes/{id}/inscripciones', [RepresentanteController::class, 'obtenerEstudiantesPreinscritos']);
+    Route::post('/representantes/{representante}', [RepresentanteController::class, 'update']);
     Route::apiResource('/representantes', RepresentanteController::class);
     Route::apiResource('/estudiantes', EstudianteController::class);
     Route::apiResource('/inscripciones', InscripcionController::class);

@@ -22,17 +22,24 @@ class EstudianteController extends Controller
     public function store(EstudianteRequest $request)
     {
         $request->validated();
+        $data = $request->all();
+        if (isset($data['fecha_nacimiento'])) {
+            $data['fecha_nacimiento'] = Carbon::createFromFormat('d-m-Y', $data['fecha_nacimiento'])->format('Y-m-d');
+        }
 
-        // Convertir la fecha de 'd-m-Y' a 'Y-m-d'
-        $fecha_nacimiento = Carbon::createFromFormat('d-m-Y', $request->fecha_nacimiento)->format('Y-m-d');
+         // Verificar si se está subiendo una nueva imagen
+         if ($request->hasFile('image')) {
+            // Eliminar la imagen anterior si existe
+            if ($request->image) {
+                Storage::disk('public')->delete('imagenes/' . $request->image);
+            }
 
-        $estudiante = Estudiante::create([
-            'name' => $request->name,
-            'apellido' => $request->apellido,
-            'cedula' => $request->cedula,
-            'fecha_nacimiento' => $fecha_nacimiento,
-            'representante_id' => $request->representante_id,
-        ]);
+            // Almacenar la nueva imagen
+            $imagePath = $request->file('image')->store('imagenes', 'public');
+            $imageName = basename($imagePath);
+            $data['image'] = $imageName;
+        }
+        $estudiante = Estudiante::create($data);
 
         return response()->json([
             'message' => 'Estudiante creado correctamente'

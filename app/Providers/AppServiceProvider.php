@@ -2,11 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Representante;
+use App\Policies\RepresentantePolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
+    protected $policies = [
+        Representante::class => RepresentantePolicy::class,
+    ];
     
     /**
      * Register any application services.

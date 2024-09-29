@@ -36,12 +36,14 @@ class RepresentanteController extends Controller
 
     public function update(ActualizarRepresentanteRequest $request, Representante $representante)
     {
-        // Verificar si el representante autenticado puede actualizar sus datos
-        if ($representante->id !== Auth::user()->id) {
-            return response()->json(['error' => 'No puedes actualizar estos datos'], 403);
-        }
 
+       
         $data = $request->all();
+        //Verificar si el representante autenticado puede actualizar sus datos
+         if ($representante->id !== Auth::user()->id) {
+                return response()->json(['error' => 'No puedes actualizar estos datos'], 403);
+            }
+            
 
         try {
             // Verificar si se está subiendo una nueva imagen
