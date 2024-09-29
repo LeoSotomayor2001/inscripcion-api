@@ -10,6 +10,8 @@ use App\Models\Inscripcion;
 use App\Models\Representante;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class RepresentanteController extends Controller
@@ -34,8 +36,13 @@ class RepresentanteController extends Controller
 
     public function update(ActualizarRepresentanteRequest $request, Representante $representante)
     {
+        // Verificar si el representante autenticado puede actualizar sus datos
+        if ($representante->id !== Auth::user()->id) {
+            return response()->json(['error' => 'No puedes actualizar estos datos'], 403);
+        }
 
         $data = $request->all();
+
         try {
             // Verificar si se está subiendo una nueva imagen
             if ($request->hasFile('image')) {
@@ -48,6 +55,15 @@ class RepresentanteController extends Controller
                 $imagePath = $request->file('image')->store('imagenes', 'public');
                 $imageName = basename($imagePath);
                 $data['image'] = $imageName;
+            }
+
+            // Verificar si se proporcionó una nueva contraseña
+            if (!empty($request->input('password'))) {
+                // Encriptar la nueva contraseña
+                $data['password'] = bcrypt($request->input('password'));
+            } else {
+                // Si no se proporciona una nueva contraseña, eliminar el campo del array de datos
+                unset($data['password']);
             }
 
             // Actualizar los datos del representante
