@@ -27,6 +27,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'required|email|exists:representantes,email',
             'password' => 'required',
+            'user_type' => 'required|in:profesor,representante'
         ];
     }
     public function messages(): array
@@ -36,6 +37,8 @@ class LoginRequest extends FormRequest
             'email.email' => 'El email no es válido',
             'email.exists' => 'El email no existe',
             'password.required' => 'La contraseña es requerida',
+            'user_type.required' => 'El tipo de usuario es requerido',
+            'user_type.in' => 'El tipo de usuario no es válido'
             
         ];
     }
