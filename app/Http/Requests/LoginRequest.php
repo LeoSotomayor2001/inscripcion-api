@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => 'required|email|exists:representantes,email',
             'password' => 'required',
-            'user_type' => 'required|in:profesor,representante'
+            'user_type' => 'required|in:profesor,representante,administrador'
         ];
     }
     public function messages(): array

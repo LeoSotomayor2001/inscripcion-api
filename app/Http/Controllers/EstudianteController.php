@@ -15,7 +15,7 @@ class EstudianteController extends Controller
 {
     public function index()
     {
-        return EstudianteResource::collection(Estudiante::with('representante')->get());
+        return EstudianteResource::collection(Estudiante::with('representante')->orderBy('name', 'ASC')->paginate(10));
     }
 
 

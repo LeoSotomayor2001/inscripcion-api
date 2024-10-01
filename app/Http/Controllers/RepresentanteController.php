@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ActualizarRepresentanteRequest;
 
 use App\Http\Resources\RepresentanteResource;
+use App\Models\Estudiante;
 use App\Models\Inscripcion;
 use App\Models\Representante;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

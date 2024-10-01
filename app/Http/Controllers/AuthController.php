@@ -53,7 +53,7 @@ class AuthController extends Controller
                     'representante' => new RepresentanteResource($representante)
                 ]);
             }
-        } elseif ($data['user_type'] === 'profesor') {
+        } elseif ($data['user_type'] === 'administrador') {
             // Intentar encontrar al usuario
             $usuario = User::where('email', $data['email'])->first();
     
