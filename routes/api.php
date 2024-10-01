@@ -22,11 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/representantes', RepresentanteController::class);
     Route::apiResource('/estudiantes', EstudianteController::class);
     Route::apiResource('/inscripciones', InscripcionController::class);
+    // Rutas para secciones
+    Route::get('/secciones', [SeccionController::class, 'index']);
+    Route::get('/secciones/{id}', [SeccionController::class, 'show']);
 })->middleware('auth:sanctum');
 
-// Rutas para secciones
-Route::get('/secciones', [SeccionController::class, 'index']);
-Route::get('/secciones/{id}', [SeccionController::class, 'show']);
 
 // Rutas para años
 Route::get('/years', [YearController::class, 'index']);
