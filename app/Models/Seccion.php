@@ -9,7 +9,7 @@ class Seccion extends Model
 {
     use HasFactory;
     protected $table = 'secciones';
-    protected $fillable = ['name', 'capacidad'];
+    protected $fillable = ['name', 'capacidad', 'year_id'];
 
     public function inscripciones()
     {

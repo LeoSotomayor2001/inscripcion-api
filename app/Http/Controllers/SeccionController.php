@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SeccionRequest;
 use App\Models\Seccion;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,7 @@ class SeccionController extends Controller
         } else {
             // Si no hay 'year_id', devolver todas las secciones
             $secciones = Seccion::with('year', 'inscripciones')
+            ->orderBy('year_id', 'asc')
                 ->get()
                 ->map(fn($seccion) => [
                     'id' => $seccion->id,
@@ -32,6 +34,20 @@ class SeccionController extends Controller
         }
 
         return response()->json($secciones);
+    }
+
+
+    // Crear una sección
+    public function store(SeccionRequest $request)
+    {
+        // Crear la sección
+        $seccion = Seccion::create([
+            'name' => $request->name,
+            'year_id' => $request->year_id,
+            'capacidad' => $request->capacidad,
+        ]);
+
+        return response()->json('Sección creada correctamente', 201);
     }
 
 
