@@ -71,4 +71,28 @@ class SeccionController extends Controller
 
         return response()->json($resultado);
     }
+
+
+    // Actualizar una sección
+    public function update(SeccionRequest $request, $id)
+    {
+        $seccion = Seccion::find($id);
+        $inscriptions = $seccion->inscripciones->whereIn('estado', ['pendiente', 'confirmada'])->count();
+        if (!$seccion) {
+            return response()->json(['mensaje' => 'Sección no encontrada'], 404);
+        }
+
+        // Verificar que no se pueda reducir la capacidad
+        if($request->capacidad < $inscriptions){
+            return response()->json(['error' => 'No puedes reducir la capacidad porque hay '.$inscriptions.' inscripciones activas'], 400);
+        }
+
+        $seccion->update([
+            'name' => $request->name,
+            'year_id' => $request->year_id,
+            'capacidad' => $request->capacidad,
+        ]);
+
+        return response()->json('Sección actualizada correctamente', 200);
+    }
 }

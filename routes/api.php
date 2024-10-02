@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/secciones', [SeccionController::class, 'index']);
     Route::get('/secciones/{id}', [SeccionController::class, 'show']);
     Route::post('/secciones', [SeccionController::class, 'store']);
+    Route::put('/secciones/{id}', [SeccionController::class, 'update']);
 })->middleware('auth:sanctum');
 
 
