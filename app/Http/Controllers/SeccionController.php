@@ -95,4 +95,25 @@ class SeccionController extends Controller
 
         return response()->json('Sección actualizada correctamente', 200);
     }
+
+
+    // Eliminar una sección
+    public function destroy($id)
+    {
+        $seccion = Seccion::find($id);
+
+        if (!$seccion) {
+            return response()->json(['mensaje' => 'Sección no encontrada'], 404);
+        }
+
+        $inscriptions = $seccion->inscripciones->whereIn('estado', ['pendiente', 'confirmada'])->count();
+
+        if ($inscriptions > 0) {
+            return response()->json(['error' => 'No puedes eliminar la sección porque hay '.$inscriptions.' inscripciones activas'], 400);
+        }
+
+        $seccion->delete();
+
+        return response()->json('Sección eliminada correctamente', 200);
+    }
 }

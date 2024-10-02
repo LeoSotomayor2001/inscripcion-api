@@ -24,14 +24,10 @@ class InscripcionController extends Controller
             return response()->json(['mensaje' => 'El estudiante ya está registrado.'], 400);
         }
 
-        // Verificar el número de inscripciones confirmadas en la sección seleccionada
-        $inscritosConfirmados = $seccion->inscripciones()->where('estado', 'confirmada')->count();
-        $estudiantesPreinscritos = $seccion->inscripciones()->where('estado', 'pendiente')->count();
-        if ($inscritosConfirmados >= $seccion->capacidad || $estudiantesPreinscritos >= $seccion->capacidad) {
+     
+        if ($seccion->capacidad <= 0) {
             return response()->json(['mensaje' => 'No hay más cupos disponibles.'], 400);
         }
-
-
         // Crear la inscripción con estado 'pendiente'
         $inscripcion = Inscripcion::create([
             'estudiante_id' => $request->estudiante_id,
