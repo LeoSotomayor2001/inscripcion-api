@@ -28,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/secciones', [SeccionController::class, 'store']);
     Route::put('/secciones/{id}', [SeccionController::class, 'update']);
     Route::delete('/secciones/{id}', [SeccionController::class, 'destroy']);
+
+    // Rutas para usuarios
+    Route::apiResource('/users', UserController::class);
 })->middleware('auth:sanctum');
 
 
@@ -37,4 +40,3 @@ Route::get('/years/{id}', [YearController::class, 'show']);
 Route::get('/imagen/{filename}', [ImageController::class, 'show']);
 Route::post('/register/representante', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::apiResource('/users', UserController::class);

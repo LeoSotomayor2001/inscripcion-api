@@ -27,6 +27,7 @@ class UserRequest extends FormRequest
             'name' => ['required', 'min:3','string', 'max:20'],
             'apellido' => ['required', 'string', 'max:20','min:3'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'admin' => ['required', 'boolean']
         ];
@@ -37,6 +38,7 @@ class UserRequest extends FormRequest
                 'apellido' => ['sometimes', 'string', 'max:20', 'min:3'],
                 'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $this->route('user')], // Verifica que el email sea único en la tabla 'users', excepto para el usuario actual
                 'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+                'cedula' => ['sometimes', 'regex:/^[0-9]{6,9}$/', 'unique:users,cedula,' . $this->route('user')],
                 'admin' => ['sometimes', 'boolean']
             ];
         }
@@ -64,7 +66,9 @@ class UserRequest extends FormRequest
             'admin.boolean' => 'El rol debe ser verdadero o falso',
             'email.email' => 'El correo electrónico no es válido',
             'email.max' => 'El correo electrónico debe tener un tamaño máximo de 255 caracteres',
-
+            'cedula.required' => 'La cedula es requerida',
+            'cedula.regex' => 'La cedula debe tener minimo 6 numeros y maximo 10',
+            'cedula.unique' => 'La cedula ya se encuentra registrada',
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -25,6 +25,7 @@ class UserController extends Controller
         $user = new User;
         $user->name = $request->name;
         $user->apellido = $request->apellido;
+        $user->cedula = $request->cedula;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->admin = $request->admin;
