@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\InscripcionRequest;
 use App\Models\Inscripcion;
 use App\Models\Seccion;
 use Illuminate\Http\Request;
 
 class InscripcionController extends Controller
 {
-    public function index(){
-        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year','ano_escolar'])
+    public function index()
+    {
+        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year', 'ano_escolar'])
             ->whereIn('estado', ['pendiente', 'confirmada'])
             ->get()
             ->map(fn($inscripcion) => [
@@ -39,7 +41,7 @@ class InscripcionController extends Controller
             return response()->json(['mensaje' => 'El estudiante ya está registrado.'], 400);
         }
 
-     
+
         if ($seccion->capacidad <= 0) {
             return response()->json(['mensaje' => 'No hay más cupos disponibles.'], 400);
         }
@@ -58,7 +60,40 @@ class InscripcionController extends Controller
         return response()->json(['mensaje' => 'Preinscripción realizada correctamente.']);
     }
 
-   
+    public function update(InscripcionRequest $request, string $id)
+    {
+        // Obtener la inscripción actual
+        $inscripcion = Inscripcion::findOrFail($id);
+
+        // Obtener la sección actual de la inscripción
+        $seccionActual = Seccion::findOrFail($inscripcion->seccion_id);
+
+        
+        // Obtener la nueva sección
+        $nuevaSeccion = Seccion::where('id', $request->seccion_id)
+        ->where('year_id', $request->year_id)
+        ->first();
+        
+        if ($nuevaSeccion->capacidad <= 0) {
+            return response()->json(['mensaje' => 'No hay más cupos disponibles.'], 400);
+        }
+        
+        // Actualizar la inscripción con la nueva sección
+        $inscripcion->update([
+            'seccion_id' => $request->seccion_id,
+            'year_id' => $request->year_id,
+            'ano_escolar_id' => $request->ano_escolar_id,
+        ]);
+        
+        // Incrementar la capacidad de la sección actual
+        $seccionActual->increment('capacidad');
+        // Reducir el cupo disponible en la nueva sección
+        $nuevaSeccion->decrement('capacidad');
+
+        return response()->json(['mensaje' => 'Inscripción actualizada correctamente.']);
+    }
+
+
 
 
     // Confirmación de inscripción
