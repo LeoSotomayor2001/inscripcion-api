@@ -9,6 +9,21 @@ use Illuminate\Http\Request;
 
 class InscripcionController extends Controller
 {
+    public function index(){
+        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year','ano_escolar'])
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->get()
+            ->map(fn($inscripcion) => [
+                'id' => $inscripcion->id,
+                'nombre' => $inscripcion->estudiante->name,
+                'apellido' => $inscripcion->estudiante->apellido,
+                'seccion' => $inscripcion->seccion->name,
+                'año' => "{$inscripcion->year->year}",
+                'estado' => $inscripcion->estado,
+                'ano_escolar' => $inscripcion->ano_escolar->nombre
+            ]);;
+        return response()->json(['inscripciones' => $inscripciones]);
+    }
     public function store(Request $request)
     {
         $seccion = Seccion::where('id', $request->seccion_id)
@@ -49,9 +64,12 @@ class InscripcionController extends Controller
     // Confirmación de inscripción
     public function confirmarInscripcion(Inscripcion $inscripcion)
     {
+        if ($inscripcion->estado !== 'pendiente') {
+            return response()->json(['error' => 'La inscripción ya ha sido confirmada.'], 400);
+        }
         $inscripcion->estado = 'confirmada';
         $inscripcion->save();
 
-        return response()->json(['mensaje' => 'Inscripción confirmada.']);
+        return response()->json(['mensaje' => 'Inscripción confirmada correctamente.']);
     }
 }

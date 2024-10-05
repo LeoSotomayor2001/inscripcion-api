@@ -56,6 +56,9 @@ class AuthController extends Controller
         } elseif ($data['user_type'] === 'administrador') {
             // Intentar encontrar al usuario
             $usuario = User::where('email', $data['email'])->first();
+            if($usuario->admin == 0) {
+                return response()->json(['fail' => ['No eres administrador']], 422);
+            }
     
             if ($usuario && Hash::check($data['password'], $usuario->password)) {
                 // Si no hay sesión activa, generar un nuevo token
