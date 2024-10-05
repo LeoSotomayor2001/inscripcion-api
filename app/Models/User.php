@@ -48,4 +48,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function anoEscolar()
+    {
+        return $this->belongsTo(Ano_escolar::class);
+    }
+
+    // Relación con Secciones: Un profesor puede tener muchas secciones
+    public function secciones()
+    {
+        return $this->hasMany(Seccion::class);
+    }
 }

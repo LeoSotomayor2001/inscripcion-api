@@ -20,7 +20,7 @@ class SeccionController extends Controller
             $secciones = Seccion::where('year_id', $yearId)->get();
         } else {
             // Si no hay 'year_id', devolver todas las secciones
-            $secciones = Seccion::with('year', 'inscripciones')
+            $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
             ->orderBy('year_id', 'asc')
                 ->get()
                 ->map(fn($seccion) => [
@@ -30,6 +30,7 @@ class SeccionController extends Controller
                     'estudiantes_preinscritos' => $seccion->inscripciones()->where('estado', 'pendiente')->count(),
                     'estudiantes_inscritos' => $seccion->inscripciones()->where('estado', 'confirmada')->count(),
                     'capacidad' => $seccion->capacidad,
+                    'ano_escolar' => $seccion->anoEscolar->nombre
                 ]);
         }
 
@@ -45,7 +46,9 @@ class SeccionController extends Controller
             'name' => $request->name,
             'year_id' => $request->year_id,
             'capacidad' => $request->capacidad,
+            'ano_escolar_id' => $request->ano_escolar_id,
         ]);
+
 
         return response()->json('Sección creada correctamente', 201);
     }
@@ -91,6 +94,7 @@ class SeccionController extends Controller
             'name' => $request->name,
             'year_id' => $request->year_id,
             'capacidad' => $request->capacidad,
+            'ano_escolar_id' => $request->ano_escolar_id,
         ]);
 
         return response()->json('Sección actualizada correctamente', 200);

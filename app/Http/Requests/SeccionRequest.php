@@ -27,6 +27,7 @@ class SeccionRequest extends FormRequest
             'name' => ['required', 'string', 'max:30', 'min:1'],
             'capacidad' => ['required', 'integer', 'min:1'],
             'year_id' => ['required', 'integer', 'exists:App\Models\Year,id'],
+            'ano_escolar_id' => ['required', 'integer', 'exists:App\Models\Ano_escolar,id'],
         ];
     }
 
@@ -41,6 +42,8 @@ class SeccionRequest extends FormRequest
             'year_id.exists' => 'El año no existe',
             'name.min' => 'El nombre debe tener al menos 1 caracter',
             'name.max' => 'El nombre debe tener como maximo 30 caracteres',
+            'ano_escolar_id.exists' => 'El año escolar no existe',
+            'ano_escolar_id.required' => 'El año escolar es obligatorio',
         ];
     }
 

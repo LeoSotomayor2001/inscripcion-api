@@ -34,6 +34,7 @@ class InscripcionController extends Controller
             'seccion_id' => $request->seccion_id,
             'year_id' => $request->year_id,
             'estado' => 'pendiente',
+            'ano_escolar_id' => $request->ano_escolar_id,
         ]);
 
         // Reducir el cupo disponible en la sección

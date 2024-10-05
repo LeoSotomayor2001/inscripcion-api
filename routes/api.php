@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnoEscolarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ImageController;
@@ -31,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas para usuarios
     Route::apiResource('/users', UserController::class);
+
+    //rutas para años escolares
+    Route::get('/anos-escolares', [AnoEscolarController::class, 'index']);
 })->middleware('auth:sanctum');
 
 

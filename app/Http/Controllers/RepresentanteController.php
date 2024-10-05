@@ -94,7 +94,7 @@ class RepresentanteController extends Controller
 
     public function obtenerEstudiantesPreinscritos($representanteId)
     {
-        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year'])
+        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year','ano_escolar'])
             ->whereIn('estado', ['pendiente', 'confirmada'])
             ->whereHas('estudiante', fn($query) => $query->where('representante_id', $representanteId))
             ->get()
@@ -104,6 +104,7 @@ class RepresentanteController extends Controller
                 'seccion' => $inscripcion->seccion->name,
                 'año' => "{$inscripcion->year->year}",
                 'estado' => $inscripcion->estado,
+                'ano_escolar' => $inscripcion->ano_escolar->nombre
             ]);
 
         return response()->json(['inscripciones' => $inscripciones]);
