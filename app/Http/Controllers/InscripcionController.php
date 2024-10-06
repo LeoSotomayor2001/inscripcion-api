@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InscripcionRequest;
 use App\Models\Inscripcion;
 use App\Models\Seccion;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class InscripcionController extends Controller
 {
@@ -22,7 +24,9 @@ class InscripcionController extends Controller
                 'seccion' => $inscripcion->seccion->name,
                 'año' => "{$inscripcion->year->year}",
                 'estado' => $inscripcion->estado,
-                'ano_escolar' => $inscripcion->ano_escolar->nombre
+                'ano_escolar' => $inscripcion->ano_escolar->nombre,
+                'seccion_id' => $inscripcion->seccion_id,
+                'ano_escolar_id' => $inscripcion->ano_escolar_id,
             ]);;
         return response()->json(['inscripciones' => $inscripciones]);
     }
@@ -60,12 +64,11 @@ class InscripcionController extends Controller
         return response()->json(['mensaje' => 'Preinscripción realizada correctamente.']);
     }
 
-    public function update(InscripcionRequest $request, string $id)
+    public function update(InscripcionRequest $request, Inscripcion $inscripcion)
     {
-        // Obtener la inscripción actual
-        $inscripcion = Inscripcion::findOrFail($id);
-
+        Gate::authorize('update', $inscripcion);
         // Obtener la sección actual de la inscripción
+
         $seccionActual = Seccion::findOrFail($inscripcion->seccion_id);
 
         

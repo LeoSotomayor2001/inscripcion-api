@@ -13,22 +13,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-
+    // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Rutas para inscripciones
-
     Route::post('/inscripciones/{inscripcion}/confirmar', [InscripcionController::class, 'confirmarInscripcion']);
-    Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
-    Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);
-    Route::get('/representantes/{id}/inscripciones', [RepresentanteController::class, 'obtenerEstudiantesPreinscritos']);
+    Route::put('/inscripciones/{inscripcion}', [InscripcionController::class, 'update']);
+    Route::apiResource('/inscripciones', InscripcionController::class);
 
+    // Rutas para estudiantes
+    Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
+    Route::apiResource('/estudiantes', EstudianteController::class);
 
     // Rutas para representantes
+    Route::get('/representantes/{id}/inscripciones', [RepresentanteController::class, 'obtenerEstudiantesPreinscritos']);
+    Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);
     Route::post('/representantes/{representante}', [RepresentanteController::class, 'update']);
     Route::apiResource('/representantes', RepresentanteController::class);
-    Route::apiResource('/estudiantes', EstudianteController::class);
-    Route::apiResource('/inscripciones', InscripcionController::class);
+
     // Rutas para secciones
     Route::get('/secciones', [SeccionController::class, 'index']);
     Route::get('/secciones/{id}', [SeccionController::class, 'show']);
@@ -39,9 +41,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas para usuarios
     Route::apiResource('/users', UserController::class);
 
-    //rutas para años escolares
+    // Rutas para años escolares
     Route::get('/anos-escolares', [AnoEscolarController::class, 'index']);
-})->middleware('auth:sanctum');
+
+});
+
 
 
 // Rutas para años
