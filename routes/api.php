@@ -21,12 +21,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/inscripciones/{inscripcion}', [InscripcionController::class, 'update']);
     Route::delete('/inscripciones/{inscripcion}', [InscripcionController::class, 'destroy']);
     Route::apiResource('/inscripciones', InscripcionController::class);
-
+    
     // Rutas para estudiantes
     Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
     Route::apiResource('/estudiantes', EstudianteController::class);
-
+    
     // Rutas para representantes
+    Route::get('/secciones/{id}/estudiantes', [SeccionController::class, 'getEstudiantes']);
     Route::get('/representantes/{id}/inscripciones', [RepresentanteController::class, 'obtenerEstudiantesPreinscritos']);
     Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);
     Route::post('/representantes/{representante}', [RepresentanteController::class, 'update']);

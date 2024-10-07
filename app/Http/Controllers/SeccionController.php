@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SeccionRequest;
 use App\Models\Seccion;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SeccionController extends Controller
@@ -21,7 +22,7 @@ class SeccionController extends Controller
         } else {
             // Si no hay 'year_id', devolver todas las secciones
             $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
-            ->orderBy('year_id', 'asc')
+                ->orderBy('year_id', 'asc')
                 ->get()
                 ->map(fn($seccion) => [
                     'id' => $seccion->id,
@@ -75,6 +76,35 @@ class SeccionController extends Controller
         return response()->json($resultado);
     }
 
+    public function getEstudiantes($id)
+    {
+        $seccion = Seccion::with('inscripciones')->find($id);
+
+        if (!$seccion) {
+            return response()->json(['error' => 'Sección no encontrada.'], 404);
+        }
+
+        $inscripciones = $seccion->inscripciones()->where('estado', 'confirmada')->get();
+        // Ordenar por cédula
+        $inscripciones = $inscripciones->sortBy(function ($inscripcion) {
+            return $inscripcion->estudiante->cedula;
+        });
+
+        // Transformar y formatear la fecha
+        $estudiantes = $inscripciones->map(function ($inscripcion) {
+            return [
+                'id' => $inscripcion->id,
+                'nombre_completo' => $inscripcion->estudiante->name . ' ' . $inscripcion->estudiante->apellido,
+                'cedula' => $inscripcion->estudiante->cedula,
+                'fecha_nacimiento' => Carbon::parse($inscripcion->estudiante->fecha_nacimiento)->format('d-m-Y'), // Formatear la fecha
+            ];
+        })->values();// Reindexar la colección
+
+        return response()->json($estudiantes);
+    }
+
+
+
 
     // Actualizar una sección
     public function update(SeccionRequest $request, $id)
@@ -86,8 +116,8 @@ class SeccionController extends Controller
         }
 
         // Verificar que no se pueda reducir la capacidad
-        if($request->capacidad < $inscriptions){
-            return response()->json(['error' => 'No puedes reducir la capacidad porque hay '.$inscriptions.' inscripciones activas'], 400);
+        if ($request->capacidad < $inscriptions) {
+            return response()->json(['error' => 'No puedes reducir la capacidad porque hay ' . $inscriptions . ' inscripciones activas'], 400);
         }
 
         $seccion->update([
@@ -113,7 +143,7 @@ class SeccionController extends Controller
         $inscriptions = $seccion->inscripciones->whereIn('estado', ['pendiente', 'confirmada'])->count();
 
         if ($inscriptions > 0) {
-            return response()->json(['error' => 'No puedes eliminar la sección porque hay '.$inscriptions.' inscripciones activas'], 400);
+            return response()->json(['error' => 'No puedes eliminar la sección porque hay ' . $inscriptions . ' inscripciones activas'], 400);
         }
 
         $seccion->delete();
