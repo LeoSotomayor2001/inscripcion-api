@@ -97,6 +97,23 @@ class InscripcionController extends Controller
     }
 
 
+    public function destroy(Inscripcion $inscripcion)
+    {
+        Gate::authorize('delete', $inscripcion);
+
+        if ($inscripcion->estado === 'confirmada') {
+            return response()->json(['error' => 'No puede eliminarse una inscripción confirmada.'], 400);
+        }
+    
+        try {
+            $inscripcion->delete();
+            return response()->json(['mensaje' => 'Inscripción eliminada correctamente.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al eliminar la inscripción: ' . $e->getMessage()], 500);
+        }
+    }
+    
+
 
 
     // Confirmación de inscripción

@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas para inscripciones
     Route::post('/inscripciones/{inscripcion}/confirmar', [InscripcionController::class, 'confirmarInscripcion']);
     Route::put('/inscripciones/{inscripcion}', [InscripcionController::class, 'update']);
+    Route::delete('/inscripciones/{inscripcion}', [InscripcionController::class, 'destroy']);
     Route::apiResource('/inscripciones', InscripcionController::class);
 
     // Rutas para estudiantes
