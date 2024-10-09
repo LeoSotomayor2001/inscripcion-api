@@ -33,7 +33,7 @@ class LoginRequest extends FormRequest
                     $userExists = DB::table('users')->where('email', $value)->exists();
                     $representanteExists = DB::table('representantes')->where('email', $value)->exists();
 
-                    if (!$userExists || !$representanteExists) {
+                    if (!$userExists && !$representanteExists) {
                         $fail('El correo no existe.');
                     }
                 },
