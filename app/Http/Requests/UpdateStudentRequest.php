@@ -28,6 +28,7 @@ class UpdateStudentRequest extends FormRequest
             'cedula' => ['sometimes', 'regex:/^[0-9]{6,9}$/', 'unique:estudiantes,cedula,' . $this->route('estudiante')->id],
             'fecha_nacimiento' => 'sometimes|date_format:d-m-Y|before:today',
             'image' => ['nullable', 'image', 'max:2048', 'mimes:jpeg,png,jpg,gif,svg,webp'],
+            'genero' => 'sometimes|string|min:1|in:Masculino,Femenino,Otro',
         ];
     }
     public function messages(): array
@@ -51,6 +52,9 @@ class UpdateStudentRequest extends FormRequest
             'image.image' => 'La imagen debe ser una imagen',
             'image.max' => 'La imagen debe tener un tamaño máximo de 2 MB',
             'image.mimes' => 'La imagen debe ser una imagen de tipo jpeg,png,jpg,gif,svg,webp',
+            'genero.in' => 'El genero debe ser Masculino,Femenino',
+            'genero.string' => 'El genero es requerido',
+            'genero.min' => 'El genero es requerido',
         ];
     }
     protected function failedValidation(Validator $validator)

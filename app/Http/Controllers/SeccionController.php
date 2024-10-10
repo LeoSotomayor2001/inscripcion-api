@@ -31,7 +31,8 @@ class SeccionController extends Controller
                     'estudiantes_preinscritos' => $seccion->inscripciones()->where('estado', 'pendiente')->count(),
                     'estudiantes_inscritos' => $seccion->inscripciones()->where('estado', 'confirmada')->count(),
                     'capacidad' => $seccion->capacidad,
-                    'ano_escolar' => $seccion->anoEscolar->nombre
+                    'ano_escolar' => $seccion->anoEscolar->nombre,
+                    'ano_escolar_id' => $seccion->ano_escolar_id,
                 ]);
         }
 
@@ -97,6 +98,7 @@ class SeccionController extends Controller
                 'nombre_completo' => $inscripcion->estudiante->name . ' ' . $inscripcion->estudiante->apellido,
                 'cedula' => $inscripcion->estudiante->cedula,
                 'fecha_nacimiento' => Carbon::parse($inscripcion->estudiante->fecha_nacimiento)->format('d-m-Y'), // Formatear la fecha
+                'genero' => $inscripcion->estudiante->genero,
             ];
         })->values();// Reindexar la colección
 

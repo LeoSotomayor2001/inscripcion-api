@@ -29,6 +29,7 @@ class EstudianteRequest extends FormRequest
             'cedula' => ['required','regex:/^[0-9]{6,9}$/', 'unique:estudiantes'],
             'fecha_nacimiento' => 'required|date_format:d-m-Y|before:today',
             'image' => ['nullable', 'image', 'max:2048', 'mimes:jpeg,png,jpg,gif,svg,webp'],
+            'genero'=> 'required|string|min:1|in:Masculino,Femenino,Otro',
 
         ];
     }
@@ -53,6 +54,9 @@ class EstudianteRequest extends FormRequest
             'image.image' => 'Debe eleger una imagen válida', 
             'image.mimes' => 'El tipo de imagen debe ser jpeg,png,jpg,gif,svg',
             'image.max' => 'La imagen debe tener un tamaño máximo de 2 MB',
+            'genero.required' => 'Debe elegir un genero',
+            'genero.min' => 'Debe elegir un genero',
+            'genero.string' => 'Género invalido',
         ];
     }
     protected function failedValidation(Validator $validator)
