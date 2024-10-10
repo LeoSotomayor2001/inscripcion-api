@@ -59,4 +59,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Seccion::class);
     }
+
+    public function asignaturas()
+    {
+        return $this->belongsToMany(Asignatura::class, 'asignatura_profesor')
+                    ->withPivot('seccion_id')
+                    ->withTimestamps();
+    }
 }

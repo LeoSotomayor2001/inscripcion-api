@@ -9,7 +9,7 @@ class Seccion extends Model
 {
     use HasFactory;
     protected $table = 'secciones';
-    protected $fillable = ['name', 'capacidad', 'year_id','ano_escolar_id'];
+    protected $fillable = ['name', 'capacidad', 'year_id', 'ano_escolar_id'];
 
     public function inscripciones()
     {
@@ -26,8 +26,15 @@ class Seccion extends Model
         return $this->belongsTo(Ano_escolar::class);
     }
 
-    public function profesor()
+    public function profesores()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
+    }
+
+  public function asignaturas()
+    {
+        return $this->belongsToMany(Asignatura::class, 'asignatura_profesor')
+            ->withPivot('profesor_id')
+            ->withTimestamps();
     }
 }
