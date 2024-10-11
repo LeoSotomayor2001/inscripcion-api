@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Asignatura extends Model
 {
     use HasFactory;
+    protected $table='asignaturas';
+    protected $fillable = [
+        'nombre',
+        'codigo',
+        'descripcion',
+        'year_id',
+    ];
 
     public function profesores()
     {
@@ -15,4 +22,5 @@ class Asignatura extends Model
                     ->withPivot('seccion_id')
                     ->withTimestamps();
     }
+    
 }
