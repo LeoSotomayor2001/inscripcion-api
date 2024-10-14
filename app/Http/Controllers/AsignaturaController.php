@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AsignaturaRequest;
+use App\Http\Resources\AsignaturaResource;
 use App\Models\Asignatura;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class AsignaturaController extends Controller
     
     public function index()
     {
-        $asignaturas = Asignatura::all();
+        $asignaturas = AsignaturaResource::collection(Asignatura::all());
+        
         return response()->json($asignaturas, 200);
     }
 

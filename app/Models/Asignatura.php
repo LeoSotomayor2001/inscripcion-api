@@ -22,5 +22,12 @@ class Asignatura extends Model
                     ->withPivot('seccion_id')
                     ->withTimestamps();
     }
+    public function year(){
+        return $this->belongsTo(Year::class);
+    }
+
+    public function anoEscolar(){
+        return $this->belongsTo(Ano_escolar::class);
+    }
     
 }

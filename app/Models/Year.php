@@ -15,4 +15,5 @@ class Year extends Model
     {
         return $this->hasMany(Inscripcion::class);
     }
+    
 }
