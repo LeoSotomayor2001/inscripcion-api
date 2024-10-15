@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AsignaturaRequest;
 use App\Http\Resources\AsignaturaResource;
 use App\Models\Asignatura;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AsignaturaController extends Controller
@@ -44,12 +45,22 @@ class AsignaturaController extends Controller
 
     }
 
-    public function update(AsignaturaRequest $request, Asignatura $asignatura)
+    public function update(AsignaturaRequest $request,$id)
     {
-        if (!$asignatura) {
-            return response()->json('Asignatura no encontrada', 404);
+        $asignatura = Asignatura::findOrFail($id);
+        // Solo verifica si 'year_id' o 'ano_escolar_id' han cambiado
+        if ($request->year_id !== $asignatura->year_id || $request->ano_escolar_id !== $asignatura->ano_escolar_id) {
+            $asignaturaExistente = Asignatura::where('year_id', $request->year_id)
+                ->where('ano_escolar_id', $request->ano_escolar_id)
+                ->where('nombre', $request->nombre)
+                ->first();
+
+            if ($asignaturaExistente) {
+                return response()->json(['error' => 'Asignatura ya registrada en este año'], 409);
+            }
         }
-        try{
+        try {
+    
             $asignatura->update([
                 'nombre' => $request->nombre,
                 'descripcion' => $request->descripcion,
@@ -57,13 +68,15 @@ class AsignaturaController extends Controller
                 'codigo' => $request->codigo,
                 'ano_escolar_id' => $request->ano_escolar_id
             ]);
-            return response()->json(['Asignatura actualizada correctamente' => $asignatura] , 200);
+    
+            return response()->json(['message' => 'Asignatura actualizada correctamente'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Asignatura no encontrada'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-        catch(\Exception $e){
-            return response()->json($e->getMessage(), 500);
-        }
-
     }
+    
 
     public function destroy($id)    
     {

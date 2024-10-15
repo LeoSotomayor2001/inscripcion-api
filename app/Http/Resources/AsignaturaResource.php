@@ -21,7 +21,8 @@ class AsignaturaResource extends JsonResource
             'year_id' => $this->year_id,
             'codigo' => $this->codigo,
             'year' => $this->year ? $this->year->year : null,
-            'ano_escolar' => $this->anoEscolar ? $this->anoEscolar->nombre : null
+            'ano_escolar' => $this->anoEscolar ? $this->anoEscolar->nombre : null,
+            'ano_escolar_id' => $this->ano_escolar_id
         ];
     }
 }
