@@ -26,6 +26,12 @@ class AsignaturaController extends Controller
 
     public function store(AsignaturaRequest $request)
     {
+        $asignaturaExistente = Asignatura::where('year_id', $request->year_id)->where('ano_escolar_id', $request->ano_escolar_id)
+        ->where('nombre', $request->nombre)->first();
+
+        if ($asignaturaExistente) {
+            return response()->json(['error'=>'Asignatura ya registrada en este año'], 409);
+        }
         try{
 
             $asignatura = Asignatura::create($request->all());
@@ -38,7 +44,7 @@ class AsignaturaController extends Controller
 
     }
 
-    public function update(Request $request, Asignatura $asignatura)
+    public function update(AsignaturaRequest $request, Asignatura $asignatura)
     {
         if (!$asignatura) {
             return response()->json('Asignatura no encontrada', 404);
@@ -48,7 +54,8 @@ class AsignaturaController extends Controller
                 'nombre' => $request->nombre,
                 'descripcion' => $request->descripcion,
                 'year_id' => $request->year_id,
-                'codigo' => $request->codigo
+                'codigo' => $request->codigo,
+                'ano_escolar_id' => $request->ano_escolar_id
             ]);
             return response()->json(['Asignatura actualizada correctamente' => $asignatura] , 200);
         }

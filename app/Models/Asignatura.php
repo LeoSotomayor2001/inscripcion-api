@@ -14,6 +14,7 @@ class Asignatura extends Model
         'codigo',
         'descripcion',
         'year_id',
+        'ano_escolar_id',
     ];
 
     public function profesores()
