@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -61,6 +62,10 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        $usurioAutenticado = Auth::user();
+        if($usurioAutenticado->id == $id){
+            return response()->json(['message' => 'No te puedes eliminar a ti mismo'], 403);
+        }
         $cantidadAdmins=User::where('admin',1)->count();
         if($cantidadAdmins< 2){
             return response()->json(['message' => 'No se puede eliminar el último administrador'], 403);
