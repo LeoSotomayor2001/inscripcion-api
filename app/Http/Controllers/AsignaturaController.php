@@ -82,9 +82,9 @@ class AsignaturaController extends Controller
     {
         $asignatura = Asignatura::find($id);
         if (!$asignatura) {
-            return response()->json('Asignatura no encontrada', 404);
+            return response()->json(['error' => 'Asignatura no encontrada'], 404);
         }
         $asignatura->delete();
-        return response()->json('Asignatura eliminada correctamente', 200);
+        return response()->json(['message' => 'Asignatura eliminada correctamente'], 200);
     }
 }
