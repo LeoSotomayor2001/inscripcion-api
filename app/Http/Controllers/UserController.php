@@ -61,12 +61,16 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        $cantidadAdmins=User::where('admin',1)->count();
+        if($cantidadAdmins< 2){
+            return response()->json(['message' => 'No se puede eliminar el último administrador'], 403);
+        }
         try{
             $user = User::findOrFail($id);
             $user->delete();
-            return response()->json(['message' => 'Usuario eliminado'], 200);
+            return response()->json(['message' => 'Profesor eliminado'], 200);
         }catch(ModelNotFoundException $e){
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+            return response()->json(['message' => 'Profesor no encontrado'], 404);
         }
     }
 }
