@@ -71,7 +71,9 @@ class InscripcionController extends Controller
 
         $seccionActual = Seccion::findOrFail($inscripcion->seccion_id);
 
-        
+        if ($inscripcion->estado === 'confirmada') {
+            return response()->json(['mensaje' => 'No puedes actualizar una inscripción confirmada.'], 400);
+        }
         // Obtener la nueva sección
         $nuevaSeccion = Seccion::where('id', $request->seccion_id)
         ->where('year_id', $request->year_id)

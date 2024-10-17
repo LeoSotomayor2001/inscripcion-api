@@ -45,7 +45,6 @@ class AuthController extends Controller
             $representante = Representante::where('email', $data['email'])->first();
     
             if ($representante && Hash::check($data['password'], $representante->password)) {
-                // Si no hay sesión activa, generar un nuevo token
                 $token = $representante->createToken('token')->plainTextToken;
     
                 return response()->json([
@@ -61,7 +60,6 @@ class AuthController extends Controller
             }
     
             if ($usuario && Hash::check($data['password'], $usuario->password)) {
-                // Si no hay sesión activa, generar un nuevo token
                 $token = $usuario->createToken('token')->plainTextToken;
     
                 return response()->json([

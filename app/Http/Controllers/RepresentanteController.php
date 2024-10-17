@@ -37,7 +37,6 @@ class RepresentanteController extends Controller
 
     public function update(ActualizarRepresentanteRequest $request, Representante $representante)
     {
-
        
         $data = $request->all();
         //Verificar si el representante autenticado puede actualizar sus datos

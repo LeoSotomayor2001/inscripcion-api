@@ -78,7 +78,6 @@ class EstudianteController extends Controller
                 'mensaje' => 'Estudiante actualizado correctamente'
             ], 200);
         } catch (\Exception $e) {
-            // Manejo genérico de excepciones
             return response()->json(['error' => 'Error al actualizar el estudiante', 'message' => $e->getMessage()], 500);
         }
     }
