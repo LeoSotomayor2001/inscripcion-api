@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnoEscolarController;
 use App\Http\Controllers\AsignaturaController;
+use App\Http\Controllers\AsignaturaProfesorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ImageController;
@@ -29,7 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Rutas para asignatura
     Route::apiResource('/asignaturas', AsignaturaController::class);
-    
+
+    // Rutas para asignatura-profesor
+    Route::get('/asignatura-profesor/{id}/asignaturas', [AsignaturaProfesorController::class, 'getAsignaturasDeProfesor']);
+    Route::delete('/asignatura-profesor', [AsignaturaProfesorController::class, 'destroy']);
+    Route::apiResource('/asignatura-profesor', AsignaturaProfesorController::class);
     // Rutas para representantes
     Route::get('/representantes/{id}/inscripciones', [RepresentanteController::class, 'obtenerEstudiantesPreinscritos']);
     Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);

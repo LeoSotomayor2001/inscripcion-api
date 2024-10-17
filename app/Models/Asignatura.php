@@ -19,10 +19,11 @@ class Asignatura extends Model
 
     public function profesores()
     {
-        return $this->belongsToMany(User::class, 'asignatura_profesor')
+        return $this->belongsToMany(User::class, 'asignatura_profesor', 'asignatura_id', 'profesor_id')
                     ->withPivot('seccion_id')
                     ->withTimestamps();
     }
+    
     public function year(){
         return $this->belongsTo(Year::class);
     }
