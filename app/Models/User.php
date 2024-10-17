@@ -57,13 +57,15 @@ class User extends Authenticatable
     // Relación con Secciones: Un profesor puede tener muchas secciones
     public function secciones()
     {
-        return $this->hasMany(Seccion::class);
+        return $this->belongsToMany(Seccion::class, 'asignatura_profesor', 'profesor_id', 'seccion_id')
+            ->withPivot('asignatura_id')
+            ->withTimestamps();
     }
 
     public function asignaturas()
     {
         return $this->belongsToMany(Asignatura::class, 'asignatura_profesor', 'profesor_id', 'asignatura_id')
-                    ->withPivot('seccion_id')
-                    ->withTimestamps();
+            ->withPivot('seccion_id')
+            ->withTimestamps();
     }
 }

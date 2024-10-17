@@ -111,23 +111,32 @@ class SeccionController extends Controller
     public function update(SeccionRequest $request, $id)
     {
         $seccion = Seccion::find($id);
-
+    
         if (!$seccion) {
             return response()->json(['mensaje' => 'Sección no encontrada'], 404);
         }
-
+    
         // Contar inscripciones activas
         $inscriptions = $seccion->inscripciones()->whereIn('estado', ['pendiente', 'confirmada'])->count();
-
+    
         // Validar si la capacidad está siendo reducida
         if ($request->capacidad < $seccion->capacidad && $request->capacidad < $inscriptions) {
             return response()->json(['error' => 'No puedes reducir la capacidad porque hay ' . $inscriptions . ' inscripciones activas'], 400);
         }
+    
+        // Verificar si hay inscripciones confirmadas
         $inscripcionesConfirmadas = $seccion->inscripciones()->where('estado', 'confirmada')->count();
-        if($inscripcionesConfirmadas > 0){
-            return response()->json(['error' => 'No puedes actualizar la sección porque hay ' . $inscriptions . ' inscripciones confirmadas'], 400);
+        if ($inscripcionesConfirmadas > 0) {
+            // Si hay inscripciones confirmadas, solo permitir actualizar la capacidad
+            if ($request->capacidad != $seccion->capacidad) {
+                $seccion->capacidad = $request->capacidad;
+                $seccion->save();
+                return response()->json('Capacidad de la sección actualizada correctamente', 200);
+            } else {
+                return response()->json(['error' => 'Solo puedes actualizar la capacidad de la sección si hay inscripciones confirmadas'], 400);
+            }
         }
-
+    
         // Actualizar la sección
         $seccion->update([
             'name' => $request->name,
@@ -135,13 +144,10 @@ class SeccionController extends Controller
             'capacidad' => $request->capacidad,
             'ano_escolar_id' => $request->ano_escolar_id,
         ]);
-
+    
         return response()->json('Sección actualizada correctamente', 200);
     }
-
-
-
-
+    
     // Eliminar una sección
     public function destroy($id)
     {
