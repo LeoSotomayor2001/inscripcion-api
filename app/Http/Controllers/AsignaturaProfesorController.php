@@ -19,8 +19,8 @@ class AsignaturaProfesorController extends Controller
             // Aplanar la colección resultante para evitar anidamientos innecesarios
             ->flatMap(function ($asignatura) {
                 $result = [];
-                foreach ($asignatura->profesores as $profesor) {
-                    foreach ($profesor->secciones as $seccion) {
+                foreach ($asignatura->profesores as $profesor) {//Iterar sobre cada profesor asociado a una asignatura específica. Aquí se está iterando a través de la lista de profesores asociados a la asignatura actual.
+                    foreach ($profesor->secciones as $seccion) {//Dentro de cada iteración de profesor, se itera sobre cada sección a la que el profesor está asignado. Este bucle anidado asegura que se procese cada combinación de profesor y sección.
                         $result[] = [
                             'id' => $asignatura->id,
                             'nombre' => $asignatura->nombre,
@@ -36,10 +36,10 @@ class AsignaturaProfesorController extends Controller
                 }
                 return $result; // Devolver el array de resultados para esta asignatura
             });
-
-        // Eliminar duplicados
+        
+        /*Utilizar la función unique para eliminar cualquier duplicado basado en una combinación única de id (asignatura), profesor_id y seccion_id. */    
         $uniqueAsignaturas = $asignaturas->unique(function ($item) {
-            return $item['id'] . $item['profesor_id'] . $item['seccion_id']; // Combinar valores para identificar duplicados
+            return $item['id'] . $item['profesor_id'] . $item['seccion_id']; 
         })->values(); // Reindexar la colección para eliminar los huecos
 
         // Devolver la respuesta en formato JSON con las asignaturas únicas

@@ -11,18 +11,45 @@ use Illuminate\Http\Request;
 class SeccionController extends Controller
 {
     // Obtener todas las secciones
-    public function index(Request $request)
+    public function index()
     {
-        // Obtener el 'year_id' si existe en la solicitud
-        $yearId = $request->query('year_id');
+        $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
+            ->orderBy('year_id', 'asc')
+            ->paginate(10);
 
-        // Si 'year_id' está presente, filtrar las secciones por ese año
+        $seccionesMapeadas = $secciones->getCollection()->map(fn($seccion) => [
+            'id' => $seccion->id,
+            'año' => $seccion->year->year,
+            'nombre' => $seccion->name,
+            'estudiantes_preinscritos' => $seccion->inscripciones()->where('estado', 'pendiente')->count(),
+            'estudiantes_inscritos' => $seccion->inscripciones()->where('estado', 'confirmada')->count(),
+            'capacidad' => $seccion->capacidad,
+            'ano_escolar' => $seccion->anoEscolar->nombre,
+            'ano_escolar_id' => $seccion->ano_escolar_id,
+        ]);
+
+        $respuesta = [
+            'secciones' => $seccionesMapeadas,
+            'pagination' => [
+                'total' => $secciones->total(),
+                'per_page' => $secciones->perPage(),
+                'current_page' => $secciones->currentPage(),
+                'last_page' => $secciones->lastPage(),
+                'from' => $secciones->firstItem(),
+                'to' => $secciones->lastItem(),
+            ],
+        ];
+
+        return response()->json($respuesta, 200);
+    }
+
+
+    public function buscarPorYearId(Request $request)
+    {
+        $yearId = $request->query('year_id');
         if ($yearId) {
-            $secciones = Seccion::where('year_id', $yearId)->get();
-        } else {
-            // Si no hay 'year_id', devolver todas las secciones
-            $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
-                ->orderBy('year_id', 'asc')
+            $secciones = Seccion::where('year_id', $yearId)
+                ->with('year', 'inscripciones', 'anoEscolar')
                 ->get()
                 ->map(fn($seccion) => [
                     'id' => $seccion->id,
@@ -34,10 +61,13 @@ class SeccionController extends Controller
                     'ano_escolar' => $seccion->anoEscolar->nombre,
                     'ano_escolar_id' => $seccion->ano_escolar_id,
                 ]);
+
+            return response()->json(['secciones' => $secciones], 200);
         }
 
-        return response()->json($secciones);
+        return response()->json(['error' => 'Año no especificado'], 400);
     }
+
 
 
     // Crear una sección
@@ -111,19 +141,19 @@ class SeccionController extends Controller
     public function update(SeccionRequest $request, $id)
     {
         $seccion = Seccion::find($id);
-    
+
         if (!$seccion) {
             return response()->json(['mensaje' => 'Sección no encontrada'], 404);
         }
-    
+
         // Contar inscripciones activas
         $inscriptions = $seccion->inscripciones()->whereIn('estado', ['pendiente', 'confirmada'])->count();
-    
+
         // Validar si la capacidad está siendo reducida
         if ($request->capacidad < $seccion->capacidad && $request->capacidad < $inscriptions) {
             return response()->json(['error' => 'No puedes reducir la capacidad porque hay ' . $inscriptions . ' inscripciones activas'], 400);
         }
-    
+
         // Verificar si hay inscripciones confirmadas
         $inscripcionesConfirmadas = $seccion->inscripciones()->where('estado', 'confirmada')->count();
         if ($inscripcionesConfirmadas > 0) {
@@ -136,7 +166,7 @@ class SeccionController extends Controller
                 return response()->json(['error' => 'Solo puedes actualizar la capacidad de la sección si hay inscripciones confirmadas'], 400);
             }
         }
-    
+
         // Actualizar la sección
         $seccion->update([
             'name' => $request->name,
@@ -144,10 +174,10 @@ class SeccionController extends Controller
             'capacidad' => $request->capacidad,
             'ano_escolar_id' => $request->ano_escolar_id,
         ]);
-    
+
         return response()->json('Sección actualizada correctamente', 200);
     }
-    
+
     // Eliminar una sección
     public function destroy($id)
     {
