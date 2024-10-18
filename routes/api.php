@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/representantes', RepresentanteController::class);
     
     // Rutas para secciones
+   Route::get('/secciones/buscar', [SeccionController::class, 'buscarPorYearId']);
     Route::get('/secciones/{id}/estudiantes', [SeccionController::class, 'getEstudiantes']);
     Route::get('/secciones', [SeccionController::class, 'index']);
     Route::get('/secciones/{id}', [SeccionController::class, 'show']);

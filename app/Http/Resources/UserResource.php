@@ -20,7 +20,8 @@ class UserResource extends JsonResource
             'apellido' => $this->apellido,
             'email' => $this->email,
             'cedula' => $this->cedula,
-            'admin' => $this->admin
+            'admin' => $this->admin,
+            'asignaturas' => $this->asignaturas->count(),
         ];
     }
 }
