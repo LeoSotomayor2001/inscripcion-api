@@ -78,13 +78,22 @@ class AsignaturaController extends Controller
     }
     
 
-    public function destroy($id)    
+    public function destroy($id)
     {
         $asignatura = Asignatura::find($id);
+    
         if (!$asignatura) {
             return response()->json(['error' => 'Asignatura no encontrada'], 404);
         }
+    
+        // Verificar si la asignatura tiene profesores asignados
+        if ($asignatura->profesores()->count() > 0) {
+            return response()->json(['error' => 'No se puede eliminar la asignatura porque tiene profesores asignados'], 400);
+        }
+    
         $asignatura->delete();
+    
         return response()->json(['message' => 'Asignatura eliminada correctamente'], 200);
     }
+    
 }

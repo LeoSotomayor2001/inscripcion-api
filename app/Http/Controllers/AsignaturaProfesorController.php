@@ -14,11 +14,14 @@ class AsignaturaProfesorController extends Controller
 {
     public function index()
     {
+        // Cargar asignaturas con sus profesores y las secciones asociadas
         $asignaturas = Asignatura::with('profesores.secciones')->get()
+            // Aplanar la colección resultante para evitar anidamientos innecesarios
             ->flatMap(function ($asignatura) {
-                return $asignatura->profesores->map(function ($profesor) use ($asignatura) {
-                    return $profesor->secciones->map(function ($seccion) use ($asignatura, $profesor) {
-                        return [
+                $result = [];
+                foreach ($asignatura->profesores as $profesor) {
+                    foreach ($profesor->secciones as $seccion) {
+                        $result[] = [
                             'id' => $asignatura->id,
                             'nombre' => $asignatura->nombre,
                             'codigo' => $asignatura->codigo,
@@ -29,13 +32,19 @@ class AsignaturaProfesorController extends Controller
                             'seccion_id' => $seccion->id,
                             'profesor_id' => $profesor->id,
                         ];
-                    });
-                })->collapse();
+                    }
+                }
+                return $result; // Devolver el array de resultados para esta asignatura
             });
 
-        return response()->json(['asignaturas' => $asignaturas], 200 );
-    }
+        // Eliminar duplicados
+        $uniqueAsignaturas = $asignaturas->unique(function ($item) {
+            return $item['id'] . $item['profesor_id'] . $item['seccion_id']; // Combinar valores para identificar duplicados
+        })->values(); // Reindexar la colección para eliminar los huecos
 
+        // Devolver la respuesta en formato JSON con las asignaturas únicas
+        return response()->json(['asignaturas' => $uniqueAsignaturas], 200);
+    }
 
     public function store(AsignaturaProfesorRequest $request)
     {

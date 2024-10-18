@@ -66,12 +66,17 @@ class UserController extends Controller
         if($usurioAutenticado->id == $id){
             return response()->json(['message' => 'No te puedes eliminar a ti mismo'], 403);
         }
-        $cantidadAdmins=User::where('admin',1)->count();
-        if($cantidadAdmins< 2){
-            return response()->json(['message' => 'No se puede eliminar el último administrador'], 403);
-        }
+      
         try{
             $user = User::findOrFail($id);
+            $cantidadAsignaturas=$user->asignaturas->count();
+            if($cantidadAsignaturas > 0){
+                return response()->json(['message' => 'No se puede eliminar al profesor porque tiene asignaturas asignadas'], 403);
+            }
+            $cantidadAdmins=User::where('admin',1)->count();
+            if($cantidadAdmins< 2 && $user->admin == 1){
+                return response()->json(['message' => 'No se puede eliminar el último administrador'], 403);
+            }
             $user->delete();
             return response()->json(['message' => 'Profesor eliminado'], 200);
         }catch(ModelNotFoundException $e){
