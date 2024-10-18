@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AsignaturaProfesorRequest;
+use App\Http\Resources\AsignaturaProfesorResource;
 use App\Models\Asignatura;
 use App\Models\AsignaturaProfesor;
 use App\Models\User;
@@ -14,36 +15,8 @@ class AsignaturaProfesorController extends Controller
 {
     public function index()
     {
-        // Cargar asignaturas con sus profesores y las secciones asociadas
-        $asignaturas = Asignatura::with('profesores.secciones')->get()
-            // Aplanar la colección resultante para evitar anidamientos innecesarios
-            ->flatMap(function ($asignatura) {
-                $result = [];
-                foreach ($asignatura->profesores as $profesor) {//Iterar sobre cada profesor asociado a una asignatura específica. Aquí se está iterando a través de la lista de profesores asociados a la asignatura actual.
-                    foreach ($profesor->secciones as $seccion) {//Dentro de cada iteración de profesor, se itera sobre cada sección a la que el profesor está asignado. Este bucle anidado asegura que se procese cada combinación de profesor y sección.
-                        $result[] = [
-                            'id' => $asignatura->id,
-                            'nombre' => $asignatura->nombre,
-                            'codigo' => $asignatura->codigo,
-                            'profesor' => $profesor->name . ' ' . $profesor->apellido,
-                            'seccion' => $seccion->name,
-                            'year' => $asignatura->year->year,
-                            'ano_escolar' => $asignatura->anoEscolar->nombre,
-                            'seccion_id' => $seccion->id,
-                            'profesor_id' => $profesor->id,
-                        ];
-                    }
-                }
-                return $result; // Devolver el array de resultados para esta asignatura
-            });
-        
-        /*Utilizar la función unique para eliminar cualquier duplicado basado en una combinación única de id (asignatura), profesor_id y seccion_id. */    
-        $uniqueAsignaturas = $asignaturas->unique(function ($item) {
-            return $item['id'] . $item['profesor_id'] . $item['seccion_id']; 
-        })->values(); // Reindexar la colección para eliminar los huecos
-
-        // Devolver la respuesta en formato JSON con las asignaturas únicas
-        return response()->json(['asignaturas' => $uniqueAsignaturas], 200);
+        $asignaturas = AsignaturaProfesor::with('asignatura', 'profesor', 'seccion')->get();
+        return response()->json(['asignaturas' => AsignaturaProfesorResource::collection($asignaturas)], 200);
     }
 
     public function store(AsignaturaProfesorRequest $request)
@@ -69,11 +42,11 @@ class AsignaturaProfesorController extends Controller
     {
 
         // Realizar la eliminación específica
-        AsignaturaProfesor::where('asignatura_id', $request->asignatura_id)
+        $asignatura=AsignaturaProfesor::where('asignatura_id', $request->asignatura_id)
             ->where('profesor_id', $request->profesor_id)
-            ->where('seccion_id', $request->seccion_id)
+            ->where('seccion_id', $request->seccion_id) 
             ->delete();
-
+        // Retornar una respuesta de éxito
         return response()->json('Profesor desasignado correctamente de la asignatura', 200);
     }
     public function getAsignaturasDeProfesor($profesor_id)

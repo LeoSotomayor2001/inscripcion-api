@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SeccionRequest;
+use App\Http\Resources\SeccionResource;
 use App\Models\Seccion;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,19 +18,8 @@ class SeccionController extends Controller
             ->orderBy('year_id', 'asc')
             ->paginate(10);
 
-        $seccionesMapeadas = $secciones->getCollection()->map(fn($seccion) => [
-            'id' => $seccion->id,
-            'año' => $seccion->year->year,
-            'nombre' => $seccion->name,
-            'estudiantes_preinscritos' => $seccion->inscripciones()->where('estado', 'pendiente')->count(),
-            'estudiantes_inscritos' => $seccion->inscripciones()->where('estado', 'confirmada')->count(),
-            'capacidad' => $seccion->capacidad,
-            'ano_escolar' => $seccion->anoEscolar->nombre,
-            'ano_escolar_id' => $seccion->ano_escolar_id,
-        ]);
-
         $respuesta = [
-            'secciones' => $seccionesMapeadas,
+            'secciones' => SeccionResource::collection($secciones->getCollection()),
             'pagination' => [
                 'total' => $secciones->total(),
                 'per_page' => $secciones->perPage(),
@@ -39,7 +29,6 @@ class SeccionController extends Controller
                 'to' => $secciones->lastItem(),
             ],
         ];
-
         return response()->json($respuesta, 200);
     }
 
@@ -50,19 +39,9 @@ class SeccionController extends Controller
         if ($yearId) {
             $secciones = Seccion::where('year_id', $yearId)
                 ->with('year', 'inscripciones', 'anoEscolar')
-                ->get()
-                ->map(fn($seccion) => [
-                    'id' => $seccion->id,
-                    'año' => $seccion->year->year,
-                    'nombre' => $seccion->name,
-                    'estudiantes_preinscritos' => $seccion->inscripciones()->where('estado', 'pendiente')->count(),
-                    'estudiantes_inscritos' => $seccion->inscripciones()->where('estado', 'confirmada')->count(),
-                    'capacidad' => $seccion->capacidad,
-                    'ano_escolar' => $seccion->anoEscolar->nombre,
-                    'ano_escolar_id' => $seccion->ano_escolar_id,
-                ]);
+                ->get();
 
-            return response()->json(['secciones' => $secciones], 200);
+            return response()->json(['secciones' => SeccionResource::collection($secciones)], 200);
         }
 
         return response()->json(['error' => 'Año no especificado'], 400);
