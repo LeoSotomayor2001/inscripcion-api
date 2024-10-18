@@ -53,6 +53,11 @@ class UserController extends Controller
     {
         $request->validated();
         $user = User::findOrFail($id);
+        $usurioAutenticado = Auth::user();
+        // Validar si el usuario autenticado es el mismo que se quiere actualizar
+        if($usurioAutenticado->id == $id && $request->admin == 0){
+            return response()->json(['message' => 'No puedes modificarte los permisos de administrador'], 403);
+        }
         $cantidadAdmins=User::where('admin',1)->count();
         if($cantidadAdmins< 2 && $user->admin == 1 && $request->admin == 0){
             return response()->json(['message' => 'No puedes quitarle la autoridad al último administrador'], 403);
