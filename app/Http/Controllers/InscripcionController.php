@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InscripcionRequest;
+use App\Http\Resources\InscripcionesResource;
 use App\Models\Inscripcion;
 use App\Models\Seccion;
 use Illuminate\Container\Attributes\Auth;
@@ -16,19 +17,21 @@ class InscripcionController extends Controller
     {
         $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year', 'ano_escolar'])
             ->whereIn('estado', ['pendiente', 'confirmada'])
-            ->get()
-            ->map(fn($inscripcion) => [
-                'id' => $inscripcion->id,
-                'nombre' => $inscripcion->estudiante->name,
-                'apellido' => $inscripcion->estudiante->apellido,
-                'seccion' => $inscripcion->seccion->name,
-                'año' => "{$inscripcion->year->year}",
-                'estado' => $inscripcion->estado,
-                'ano_escolar' => $inscripcion->ano_escolar->nombre,
-                'seccion_id' => $inscripcion->seccion_id,
-                'ano_escolar_id' => $inscripcion->ano_escolar_id,
-            ]);;
-        return response()->json(['inscripciones' => $inscripciones]);
+            ->paginate(10);
+
+        $respuesta=[
+            'inscripciones' => InscripcionesResource::collection($inscripciones->getCollection()),
+            'pagination' => [
+                'total' => $inscripciones->total(),
+                'per_page' => $inscripciones->perPage(),
+                'current_page' => $inscripciones->currentPage(),
+                'last_page' => $inscripciones->lastPage(),
+                'from' => $inscripciones->firstItem(),
+                'to' => $inscripciones->lastItem(),
+            ]
+        ];
+            
+        return response()->json($respuesta, 200);
     }
     public function store(Request $request)
     {
