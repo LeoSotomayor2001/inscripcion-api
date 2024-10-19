@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/estudiantes', EstudianteController::class);
 
     //Rutas para asignatura
+    Route::get('/asignaturas-buscar', [AsignaturaController::class, 'filtrarAsignaturas']);
+    Route::get('/asignaturas-all', [AsignaturaController::class, 'allAsignaturas']);
     Route::apiResource('/asignaturas', AsignaturaController::class);
 
     // Rutas para asignatura-profesor
