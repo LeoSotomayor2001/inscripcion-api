@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AsignaturaProfesorRequest;
 use App\Http\Resources\AsignaturaProfesorResource;
+use App\Http\Resources\AsignaturaResource;
 use App\Models\Asignatura;
 use App\Models\AsignaturaProfesor;
 use App\Models\User;
@@ -37,14 +38,34 @@ class AsignaturaProfesorController extends Controller
         return response()->json('Profesor asignado correctamente a la asignatura', 201);
     }
 
+    public function filtrarAsignaturas(Request $request)
+    {
+        $query = AsignaturaProfesor::query();
+
+        if ($request->filled('nombre')) {
+            // El campo 'nombre' tiene un valor y no está vacío
+            $query->whereHas('profesor', function ($q) use ($request) {
+                $q->where('name', 'LIKE', "%{$request->nombre}%");
+            });
+        }
+        if ($request->filled('year_id')) {
+            // El campo 'year_id' tiene un valor y no está vacío
+            $query->whereHas('seccion', function ($q) use ($request) {
+                $q->where('year_id', $request->year_id);
+            });
+        }
+
+        $asignaturas = $query->get();
+        return response()->json(AsignaturaProfesorResource::collection($asignaturas), 200);
+    }
 
     public function destroy(AsignaturaProfesorRequest $request)
     {
 
         // Realizar la eliminación específica
-        $asignatura=AsignaturaProfesor::where('asignatura_id', $request->asignatura_id)
+        $asignatura = AsignaturaProfesor::where('asignatura_id', $request->asignatura_id)
             ->where('profesor_id', $request->profesor_id)
-            ->where('seccion_id', $request->seccion_id) 
+            ->where('seccion_id', $request->seccion_id)
             ->delete();
         // Retornar una respuesta de éxito
         return response()->json('Profesor desasignado correctamente de la asignatura', 200);
