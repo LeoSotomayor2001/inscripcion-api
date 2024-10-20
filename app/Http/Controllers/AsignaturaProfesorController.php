@@ -16,8 +16,20 @@ class AsignaturaProfesorController extends Controller
 {
     public function index()
     {
-        $asignaturas = AsignaturaProfesor::with('asignatura', 'profesor', 'seccion')->get();
-        return response()->json(['asignaturas' => AsignaturaProfesorResource::collection($asignaturas)], 200);
+        $asignaturas = AsignaturaProfesor::with('asignatura', 'profesor', 'seccion')->paginate(10);
+
+        $respuesta = [
+            'asignaturas' => AsignaturaProfesorResource::collection($asignaturas->getCollection()),
+            'pagination' => [
+                'total' => $asignaturas->total(),
+                'per_page' => $asignaturas->perPage(),
+                'current_page' => $asignaturas->currentPage(),
+                'last_page' => $asignaturas->lastPage(),
+                'from' => $asignaturas->firstItem(),
+                'to' => $asignaturas->lastItem(),
+            ],
+        ];
+        return response()->json($respuesta, 200);
     }
 
     public function store(AsignaturaProfesorRequest $request)
@@ -52,6 +64,11 @@ class AsignaturaProfesorController extends Controller
             // El campo 'year_id' tiene un valor y no está vacío
             $query->whereHas('seccion', function ($q) use ($request) {
                 $q->where('year_id', $request->year_id);
+            });
+        }
+        if($request->filled('nombre_asignatura')) {
+            $query->whereHas('asignatura', function ($q) use ($request) {
+                $q->where('nombre', 'LIKE', "%{$request->nombre_asignatura}%");
             });
         }
 
