@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InscripcionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RepresentanteController;
 use App\Http\Controllers\SeccionController;
 use App\Http\Controllers\UserController;
@@ -52,6 +53,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/secciones', [SeccionController::class, 'store']);
     Route::put('/secciones/{id}', [SeccionController::class, 'update']);
     Route::delete('/secciones/{id}', [SeccionController::class, 'destroy']);
+
+    //Rutas para las notificaciones
+    Route::get('/notificaciones', [NotificationController::class, 'index']);
+    Route::get('/notificaciones/unread', [NotificationController::class, 'unReadNotifications']);
+    Route::post('/notificaciones/mark-as-read/{id}', [NotificationController::class, 'markAsRead']);
+    Route::post('/notificaciones/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
 
     // Rutas para usuarios
     Route::apiResource('/users', UserController::class);

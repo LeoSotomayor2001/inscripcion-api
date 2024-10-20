@@ -7,9 +7,12 @@ use App\Http\Requests\InscripcionRequest;
 use App\Http\Resources\InscripcionesResource;
 use App\Models\Inscripcion;
 use App\Models\Seccion;
+use App\Models\User;
+use App\Notifications\InscripcionCreada;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 
 class InscripcionController extends Controller
 {
@@ -67,6 +70,11 @@ class InscripcionController extends Controller
 
         // Reducir el cupo disponible en la sección
         $seccion->decrement('capacidad');
+
+        $admins = User::where('admin', true)->get();
+
+        // Enviar notificación a cada administrador
+        Notification::send($admins, new InscripcionCreada($inscripcion));
 
         return response()->json(['mensaje' => 'Preinscripción realizada correctamente.']);
     }
