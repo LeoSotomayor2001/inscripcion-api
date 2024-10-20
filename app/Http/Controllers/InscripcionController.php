@@ -18,6 +18,9 @@ class InscripcionController extends Controller
         $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year', 'ano_escolar'])
             ->whereIn('estado', ['pendiente', 'confirmada'])
             ->orderBy('created_at', 'desc')
+            ->whereHas('ano_escolar', function ($query) {
+                $query->where('habilitado', true);
+            })
             ->paginate(10);
 
         $respuesta=[

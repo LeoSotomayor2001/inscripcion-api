@@ -16,6 +16,10 @@ class SeccionController extends Controller
     {
         $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
             ->orderBy('year_id', 'asc')
+            ->orderBy('name', 'asc')
+            ->whereHas('anoEscolar', function ($query) {
+                $query->where('habilitado', true);
+            })
             ->paginate(10);
 
         $respuesta = [
