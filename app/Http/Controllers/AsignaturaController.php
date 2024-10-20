@@ -57,10 +57,14 @@ class AsignaturaController extends Controller
             ->when($request->ano_escolar_id, function ($query, $ano_escolar_id) {
                 return $query->where('ano_escolar_id', $ano_escolar_id);
             })
+            ->whereHas('anoEscolar', function ($query) {
+                $query->where('habilitado', true); // Filtrar por año escolar habilitado
+            })
             ->get();
     
         return response()->json(AsignaturaResource::collection($asignaturas), 200);
     }
+    
     
 
     public function show($id)
