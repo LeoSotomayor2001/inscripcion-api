@@ -14,10 +14,14 @@ class AsignaturaController extends Controller
 
     public function index()
     {
-        $asignaturas = Asignatura::paginate(12);
+        $asignaturas = Asignatura::with('anoEscolar')
+        ->whereHas('anoEscolar', function ($query) {
+            $query->where('habilitado', true);
+        })
+        ->paginate(10);
 
         $respuesta = [
-            'asignaturas' => AsignaturaResource::collection($asignaturas->getCollection()),
+            'asignaturas' => AsignaturaResource::collection($asignaturas->items()),
             'pagination' => [
                 'total' => $asignaturas->total(),
                 'per_page' => $asignaturas->perPage(),
@@ -33,7 +37,11 @@ class AsignaturaController extends Controller
 
     public function allAsignaturas()
     {
-        $asignaturas = Asignatura::orderBy('year_id', 'asc')->get();
+        $asignaturas = Asignatura::with('anoEscolar')
+        ->whereHas('anoEscolar', function ($query) {
+            $query->where('habilitado', true);
+        })
+        -> orderBy('year_id', 'asc')->get();
         return response()->json(AsignaturaResource::collection($asignaturas), 200);
     }
 

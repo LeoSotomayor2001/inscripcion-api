@@ -15,22 +15,28 @@ use Illuminate\Support\Facades\DB;
 class AsignaturaProfesorController extends Controller
 {
     public function index()
-    {
-        $asignaturas = AsignaturaProfesor::with('asignatura', 'profesor', 'seccion')->paginate(10);
+{
+    $asignaturas = AsignaturaProfesor::with('asignatura', 'profesor', 'seccion')
+        ->whereHas('asignatura.anoEscolar', function ($query) {
+            $query->where('habilitado', true);
+        })
+        ->paginate(10);
 
-        $respuesta = [
-            'asignaturas' => AsignaturaProfesorResource::collection($asignaturas->getCollection()),
-            'pagination' => [
-                'total' => $asignaturas->total(),
-                'per_page' => $asignaturas->perPage(),
-                'current_page' => $asignaturas->currentPage(),
-                'last_page' => $asignaturas->lastPage(),
-                'from' => $asignaturas->firstItem(),
-                'to' => $asignaturas->lastItem(),
-            ],
-        ];
-        return response()->json($respuesta, 200);
-    }
+    $respuesta = [
+        'asignaturas' => AsignaturaProfesorResource::collection($asignaturas->items()),  // Aquí usamos items() en lugar de getCollection()
+        'pagination' => [
+            'total' => $asignaturas->total(),
+            'per_page' => $asignaturas->perPage(),
+            'current_page' => $asignaturas->currentPage(),
+            'last_page' => $asignaturas->lastPage(),
+            'from' => $asignaturas->firstItem(),
+            'to' => $asignaturas->lastItem(),
+        ],
+    ];
+
+    return response()->json($respuesta, 200);
+}
+
 
     public function store(AsignaturaProfesorRequest $request)
     {
@@ -53,28 +59,38 @@ class AsignaturaProfesorController extends Controller
     public function filtrarAsignaturas(Request $request)
     {
         $query = AsignaturaProfesor::query();
-
+    
         if ($request->filled('nombre')) {
             // El campo 'nombre' tiene un valor y no está vacío
             $query->whereHas('profesor', function ($q) use ($request) {
                 $q->where('name', 'LIKE', "%{$request->nombre}%");
             });
         }
+    
         if ($request->filled('year_id')) {
             // El campo 'year_id' tiene un valor y no está vacío
             $query->whereHas('seccion', function ($q) use ($request) {
                 $q->where('year_id', $request->year_id);
+                $q->whereHas('anoEscolar', function ($q) {
+                    $q->where('habilitado', true);  // Filtrar por año escolar habilitado
+                });
             });
         }
-        if($request->filled('nombre_asignatura')) {
+    
+        if ($request->filled('nombre_asignatura')) {
             $query->whereHas('asignatura', function ($q) use ($request) {
-                $q->where('nombre', 'LIKE', "%{$request->nombre_asignatura}%");
+                $q->where('nombre', 'LIKE', "%{$request->nombre_asignatura}%")
+                  ->whereHas('anoEscolar', function ($q) {
+                      $q->where('habilitado', true);  // Filtrar por año escolar habilitado
+                  });
             });
         }
-
+    
         $asignaturas = $query->get();
+    
         return response()->json(AsignaturaProfesorResource::collection($asignaturas), 200);
     }
+    
 
     public function destroy(AsignaturaProfesorRequest $request)
     {
