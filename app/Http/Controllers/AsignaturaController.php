@@ -8,6 +8,7 @@ use App\Http\Resources\AsignaturaResource;
 use App\Models\Asignatura;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AsignaturaController extends Controller
 {
@@ -74,7 +75,8 @@ class AsignaturaController extends Controller
     }
 
     public function store(AsignaturaRequest $request)
-    {
+    {   
+        Gate::authorize('create', 'App\Models\Asignatura');
         $asignaturaExistente = Asignatura::where('year_id', $request->year_id)->where('ano_escolar_id', $request->ano_escolar_id)
             ->where('nombre', $request->nombre)->first();
 
@@ -92,7 +94,10 @@ class AsignaturaController extends Controller
 
     public function update(AsignaturaRequest $request, $id)
     {
+
         $asignatura = Asignatura::findOrFail($id);
+
+        Gate::authorize('update', $asignatura);
         // Solo verifica si 'year_id' o 'ano_escolar_id' han cambiado
         if ($request->year_id !== $asignatura->year_id || $request->ano_escolar_id !== $asignatura->ano_escolar_id) {
             $asignaturaExistente = Asignatura::where('year_id', $request->year_id)
@@ -129,7 +134,7 @@ class AsignaturaController extends Controller
     public function destroy($id)
     {
         $asignatura = Asignatura::find($id);
-
+        Gate::authorize('delete', $asignatura);
         if (!$asignatura) {
             return response()->json(['error' => 'Asignatura no encontrada'], 404);
         }

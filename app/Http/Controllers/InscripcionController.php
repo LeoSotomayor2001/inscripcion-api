@@ -136,6 +136,8 @@ class InscripcionController extends Controller
     // Confirmación de inscripción
     public function confirmarInscripcion(Inscripcion $inscripcion)
     {
+        Gate::authorize('confirmar', $inscripcion);
+
         if ($inscripcion->estado !== 'pendiente') {
             return response()->json(['error' => 'La inscripción ya ha sido confirmada.'], 400);
         }

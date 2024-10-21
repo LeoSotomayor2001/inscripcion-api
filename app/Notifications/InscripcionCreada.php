@@ -36,9 +36,9 @@ class InscripcionCreada extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->line('Se ha preinscrito a la inscripcion del estudiante ' . $this->inscripcion->estudiante->name . ' ' . $this->inscripcion->estudiante->apellido)
+                    ->action('Ver inscripción', url('http://localhost:5173/index/inscripciones'))
+                    ->line('Gracias por utilizar el sistema!');
     }
 
     public function toDatabase($notifiable)

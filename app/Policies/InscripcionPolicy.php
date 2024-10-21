@@ -19,6 +19,12 @@ class InscripcionPolicy
         return $user->admin;
     }
 
+    public function confirmar(User $user, Inscripcion $inscripcion): Response
+    {
+        return $user->admin  ? Response::allow()
+        : Response::deny('Debes ser administrador.');
+    }
+
     /**
      * Determine whether the user can delete the model.
      */
