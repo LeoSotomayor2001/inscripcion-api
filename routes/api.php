@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Rutas para inscripciones
+    Route::get('/inscripciones-all', [InscripcionController::class, 'getAllInscripciones']);
     Route::post('/inscripciones/{inscripcion}/confirmar', [InscripcionController::class, 'confirmarInscripcion']);
     Route::put('/inscripciones/{inscripcion}', [InscripcionController::class, 'update']);
     Route::delete('/inscripciones/{inscripcion}', [InscripcionController::class, 'destroy']);
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Rutas para estudiantes
     Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
+    Route::get('/estudiantes-all',[EstudianteController::class, 'getAllStudents']);
     Route::apiResource('/estudiantes', EstudianteController::class);
 
     //Rutas para asignatura
@@ -47,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Rutas para secciones
    Route::get('/secciones/buscar', [SeccionController::class, 'buscarPorYearId']);
+    Route::get('/secciones-all',[SeccionController::class, 'getAllSecciones']);
     Route::get('/secciones/{id}/estudiantes', [SeccionController::class, 'getEstudiantes']);
     Route::get('/secciones', [SeccionController::class, 'index']);
     Route::get('/secciones/{id}', [SeccionController::class, 'show']);
@@ -60,7 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notificaciones/mark-as-read/{id}', [NotificationController::class, 'markAsRead']);
     Route::post('/notificaciones/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
 
-    // Rutas para usuarios
+    // Rutas para Profesores
+    Route::get('/users-all', [UserController::class, 'getAllProfesores']);
     Route::apiResource('/users', UserController::class);
 
     // Rutas para años escolares

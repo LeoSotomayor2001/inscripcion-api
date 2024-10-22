@@ -16,6 +16,11 @@ class UserController extends Controller
     {
         return UserResource::collection(User::all());
     }
+
+    public function getAllProfesores()
+    {
+        return UserResource::collection(User::all());
+    }
     /**
      * Store a newly created resource in storage.
      */

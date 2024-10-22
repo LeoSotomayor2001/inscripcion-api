@@ -18,6 +18,10 @@ class EstudianteController extends Controller
         return EstudianteResource::collection(Estudiante::with('representante')->orderBy('name', 'ASC')->paginate(10));
     }
 
+    public function getAllStudents(){
+        return EstudianteResource::collection(Estudiante::with('representante')->orderBy('name', 'ASC')->get());
+    }
+
 
     public function store(EstudianteRequest $request)
     {

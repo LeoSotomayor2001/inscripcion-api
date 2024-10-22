@@ -36,6 +36,16 @@ class SeccionController extends Controller
         return response()->json($respuesta, 200);
     }
 
+    public function getAllSecciones()
+    {
+        $secciones = Seccion::with('year', 'inscripciones', 'anoEscolar')
+        ->whereHas('anoEscolar', function ($query) {
+            $query->where('habilitado', true);
+        })
+        ->get();
+        return response()->json(['secciones' => SeccionResource::collection($secciones)], 200);
+    }
+
 
     public function buscarPorYearId(Request $request)
     {

@@ -25,7 +25,6 @@ class InscripcionController extends Controller
                 $query->where('habilitado', true);
             })
             ->paginate(10);
-
         $respuesta=[
             'inscripciones' => InscripcionesResource::collection($inscripciones->getCollection()),
             'pagination' => [
@@ -39,6 +38,18 @@ class InscripcionController extends Controller
         ];
             
         return response()->json($respuesta, 200);
+    }
+
+    public function getAllInscripciones()
+    {
+        $inscripciones = Inscripcion::with(['estudiante', 'seccion', 'year', 'ano_escolar'])
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->orderBy('created_at', 'desc')
+            ->whereHas('ano_escolar', function ($query) {
+                $query->where('habilitado', true);
+            })
+            ->get();
+        return response()->json(['inscripciones' => InscripcionesResource::collection($inscripciones)], 200);
     }
     public function store(Request $request)
     {
