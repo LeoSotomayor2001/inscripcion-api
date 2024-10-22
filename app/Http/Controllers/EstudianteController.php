@@ -19,7 +19,11 @@ class EstudianteController extends Controller
     }
 
     public function getAllStudents(){
-        return EstudianteResource::collection(Estudiante::with('representante')->orderBy('name', 'ASC')->get());
+        $estudiantes = Estudiante::with('representante')->orderBy('name', 'ASC')->get();
+        $estudiantesContados=count($estudiantes);
+        return response()->json([
+            'data' => $estudiantesContados,
+        ]);
     }
 
 

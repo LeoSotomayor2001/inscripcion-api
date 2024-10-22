@@ -49,7 +49,8 @@ class InscripcionController extends Controller
                 $query->where('habilitado', true);
             })
             ->get();
-        return response()->json(['inscripciones' => InscripcionesResource::collection($inscripciones)], 200);
+            $inscripcionesContadas=$inscripciones->count();
+        return response()->json(['inscripciones' => $inscripcionesContadas], 200);
     }
     public function store(Request $request)
     {
