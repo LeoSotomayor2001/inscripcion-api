@@ -15,11 +15,19 @@ class EstudianteController extends Controller
 {
     public function index()
     {
-        return EstudianteResource::collection(Estudiante::with('representante')->orderBy('name', 'ASC')->paginate(10));
+        return EstudianteResource::collection(Estudiante::with(['representante', 'inscripciones'])->orderBy('name', 'ASC')
+        ->whereHas('inscripciones.ano_escolar', function ($query) {
+            $query->where('habilitado', true);
+        })
+        ->paginate(10));
     }
 
     public function getAllStudents(){
-        $estudiantes = Estudiante::with('representante')->orderBy('name', 'ASC')->get();
+        $estudiantes = Estudiante::with(['representante', 'inscripciones'])->orderBy('name', 'ASC')
+        ->whereHas('inscripciones.ano_escolar', function ($query) {
+            $query->where('habilitado', true);
+        })    
+        ->get();
         $estudiantesContados=count($estudiantes);
         return response()->json([
             'data' => $estudiantesContados,

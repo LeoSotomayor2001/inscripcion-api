@@ -70,13 +70,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas para años escolares
     Route::get('/anos-escolares', [AnoEscolarController::class, 'index']);
 
+    // Rutas para años
+    Route::get('/years', [YearController::class, 'index']);
+    Route::get('/years/{id}', [YearController::class, 'show']);
+    Route::delete('/years/{id}', [YearController::class, 'destroy']);
 });
 
 
 
-// Rutas para años
-Route::get('/years', [YearController::class, 'index']);
-Route::get('/years/{id}', [YearController::class, 'show']);
 Route::get('/imagen/{filename}', [ImageController::class, 'show']);
 Route::post('/register/representante', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');

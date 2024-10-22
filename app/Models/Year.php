@@ -15,5 +15,15 @@ class Year extends Model
     {
         return $this->hasMany(Inscripcion::class);
     }
+
+    public function secciones()
+    {
+        return $this->hasMany(Seccion::class);
+    }
+
+    public function asignaturas()
+    {
+        return $this->hasMany(Asignatura::class);
+    }
     
 }
