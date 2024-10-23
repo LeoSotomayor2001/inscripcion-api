@@ -43,8 +43,11 @@ class AsignaturaController extends Controller
             $query->where('habilitado', true);
         })
         -> orderBy('year_id', 'asc')->get();
-        return response()->json(AsignaturaResource::collection($asignaturas), 200);
+
+        $asignaturasContadas = count($asignaturas);
+        return response()->json(['asignaturasContadas'=>$asignaturasContadas, 'asignaturas'=>AsignaturaResource::collection($asignaturas)], 200);
     }
+
 
     public function filtrarAsignaturas(Request $request)
     {
