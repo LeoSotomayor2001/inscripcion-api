@@ -25,10 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/inscripciones/{inscripcion}', [InscripcionController::class, 'update']);
     Route::delete('/inscripciones/{inscripcion}', [InscripcionController::class, 'destroy']);
     Route::apiResource('/inscripciones', InscripcionController::class);
-    
+
     // Rutas para estudiantes
     Route::post('/estudiantes/{estudiante}', [EstudianteController::class, 'update']);
-    Route::get('/estudiantes-all',[EstudianteController::class, 'getAllStudents']);
+    Route::get('/estudiantes-all', [EstudianteController::class, 'getAllStudents']);
     Route::apiResource('/estudiantes', EstudianteController::class);
 
     //Rutas para asignatura
@@ -46,10 +46,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/representantes/{id}/estudiantes', [RepresentanteController::class, 'getEstudiantes']);
     Route::post('/representantes/{representante}', [RepresentanteController::class, 'update']);
     Route::apiResource('/representantes', RepresentanteController::class);
-    
+
     // Rutas para secciones
-   Route::get('/secciones/buscar', [SeccionController::class, 'buscarPorYearId']);
-    Route::get('/secciones-all',[SeccionController::class, 'getAllSecciones']);
+    Route::get('/secciones/buscar', [SeccionController::class, 'buscarPorYearId']);
+    Route::get('/secciones-all', [SeccionController::class, 'getAllSecciones']);
     Route::get('/secciones/{id}/estudiantes', [SeccionController::class, 'getEstudiantes']);
     Route::get('/secciones', [SeccionController::class, 'index']);
     Route::get('/secciones/{id}', [SeccionController::class, 'show']);
@@ -69,6 +69,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas para años escolares
     Route::get('/anos-escolares', [AnoEscolarController::class, 'index']);
+    Route::post('/anos-escolares', [AnoEscolarController::class, 'store']);
+    Route::put('/anos-escolares/{id}',[AnoEscolarController::class,'update']);
 
     // Rutas para años
     Route::get('/years', [YearController::class, 'index']);

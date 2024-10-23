@@ -12,7 +12,8 @@ class Ano_escolar extends Model
     protected $fillable = [
         'nombre',
         'inicio',
-        'fin'
+        'fin',
+        'habilitado'
     ];
     protected $table = 'ano_escolar';
 
@@ -27,6 +28,10 @@ class Ano_escolar extends Model
     public function secciones()
     {
         return $this->hasMany(Seccion::class);
+    }
+    public function asignaturas()
+    {
+        return $this->hasMany(Asignatura::class);
     }
 
     // Si decides relacionar con estudiantes o profesores
