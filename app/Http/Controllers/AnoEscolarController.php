@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnioEscolarRequest;
+use App\Http\Resources\AnioEscolarResource;
 use App\Models\Ano_escolar;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,7 @@ class AnoEscolarController extends Controller
 {
     public function index()
     {
-        $anosEscolares = Ano_escolar::all(); // Obtener todos los años escolares activos
+        $anosEscolares = AnioEscolarResource::collection(Ano_escolar::all()); // Obtener todos los años escolares activos
         return response()->json($anosEscolares);
     }
 
