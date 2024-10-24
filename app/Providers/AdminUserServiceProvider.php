@@ -6,33 +6,22 @@ use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+class AdminUserServiceProvider extends ServiceProvider
 {
-   
-    
     /**
-     * Register any application services.
+     * Register services.
      */
     public function register(): void
     {
         //
     }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        $this->createAdminUserIfNotExists();
-    }
+    
     protected function createAdminUserIfNotExists()
     {
         if (User::where('admin', true)->count() === 0) {
             User::create([
                 'name' => 'Admin',
                 'email' => 'admin@example.com',
-                'apellido' => 'Admin',
-                'cedula' => '123456987',
                 'password' => bcrypt('password'), // Cambia esto por una contraseña más segura
                 'admin' => true,
             ]);
@@ -41,4 +30,13 @@ class AppServiceProvider extends ServiceProvider
             Log::info('Ya existe un usuario administrador.');
         }
     }
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        $this->createAdminUserIfNotExists();
+    }
+
 }
