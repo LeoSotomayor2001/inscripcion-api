@@ -43,4 +43,13 @@ class AnoEscolarController extends Controller
         $anioEscolar->update($request->all());
         return response()->json(['message' => 'Periodo escolar actualizado correctamente']);
     }
+    
+    public function destroy(string $id){
+        $anioEscolar = Ano_escolar::findOrFail($id);
+        if($anioEscolar->inscripciones->count() > 0 || $anioEscolar->secciones->count() > 0 || $anioEscolar->asignaturas->count() > 0){
+            return response()->json(['error' => 'No se puede eliminar el año escolar porque tiene inscripciones, secciones o asignaturas registradas'],403);
+        }
+        $anioEscolar->delete();
+        return response()->json(['message' => 'Periodo escolar eliminado correctamente']);
+    }
 }

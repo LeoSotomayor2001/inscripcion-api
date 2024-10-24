@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/anos-escolares', [AnoEscolarController::class, 'index']);
     Route::post('/anos-escolares', [AnoEscolarController::class, 'store']);
     Route::put('/anos-escolares/{id}',[AnoEscolarController::class,'update']);
+    Route::delete('/anos-escolares/{id}', [AnoEscolarController::class, 'destroy']);
 
     // Rutas para años
     Route::get('/years', [YearController::class, 'index']);
