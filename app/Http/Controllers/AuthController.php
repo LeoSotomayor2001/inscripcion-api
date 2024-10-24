@@ -55,6 +55,9 @@ class AuthController extends Controller
         } elseif ($data['user_type'] === 'administrador') {
             // Intentar encontrar al usuario
             $usuario = User::where('email', $data['email'])->first();
+            if(!$usuario) {
+                return response()->json(['fail' => ['Credenciales no encontradas']], 422);
+            }
             if($usuario->admin == 0) {
                 return response()->json(['fail' => ['No eres administrador']], 422);
             }

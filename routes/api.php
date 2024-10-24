@@ -75,7 +75,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas para años
     Route::get('/years', [YearController::class, 'index']);
+    Route::post('/years',[YearController::class,'store']);
     Route::get('/years/{id}', [YearController::class, 'show']);
+    Route::put('/years/{id}', [YearController::class, 'update']);
     Route::delete('/years/{id}', [YearController::class, 'destroy']);
 });
 
