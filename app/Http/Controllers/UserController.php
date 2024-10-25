@@ -9,17 +9,20 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
     public function index()
     {
+        Gate::authorize('view', User::class);
         return UserResource::collection(User::all());
     }
 
     public function getAllProfesores()
-    {
-        return UserResource::collection(User::all());
+    {   
+        $usersContados=User::all()->count();
+        return response()->json($usersContados);
     }
     /**
      * Store a newly created resource in storage.
@@ -27,7 +30,7 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $request->validated();
-        
+        Gate::authorize('create', User::class);
         $user = new User;
         $user->name = $request->name;
         $user->apellido = $request->apellido;
@@ -58,6 +61,7 @@ class UserController extends Controller
     {
         $request->validated();
         $user = User::findOrFail($id);
+        Gate::authorize('update', $user);
         $usurioAutenticado = Auth::user();
         // Validar si el usuario autenticado es el mismo que se quiere actualizar
         if($usurioAutenticado->id == $id && $request->admin == 0){
@@ -77,12 +81,13 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $usurioAutenticado = Auth::user();
+        $user = User::findOrFail($id);
+        Gate::authorize('delete', $user);
         if($usurioAutenticado->id == $id){
             return response()->json(['message' => 'No te puedes eliminar a ti mismo'], 403);
         }
       
         try{
-            $user = User::findOrFail($id);
             $cantidadAsignaturas=$user->asignaturas->count();
             if($cantidadAsignaturas > 0){
                 return response()->json(['message' => 'No se puede eliminar al profesor porque tiene asignaturas asignadas'], 403);

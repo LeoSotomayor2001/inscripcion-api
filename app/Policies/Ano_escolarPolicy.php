@@ -3,36 +3,28 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\Response;
-use App\Models\Inscripcion;
+use App\Models\Ano_escolar;
 use App\Models\User;
 
-class InscripcionPolicy
+class Ano_escolarPolicy
 {
+    public function create(User $user): Response
+    {
+        return $user->admin  ? Response::allow()
+        : Response::deny('Debes ser administrador.');
+    }
+
+    public function update(User $user, Ano_escolar $anoEscolar): Response
+    {
+        return $user->admin  ? Response::allow()
+        : Response::deny('Debes ser administrador.');
+    }
+
    
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Inscripcion $inscripcion): Response
+    public function delete(User $user, Ano_escolar $anoEscolar): Response
     {
-        
+
         return $user->admin  ? Response::allow()
         : Response::deny('Debes ser administrador.');
     }
-
-    public function confirmar(User $user, Inscripcion $inscripcion): Response
-    {
-        return $user->admin  ? Response::allow()
-        : Response::deny('Debes ser administrador.');
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Inscripcion $inscripcion): Response
-    {
-        return $user->admin  ? Response::allow()
-        : Response::deny('Debes ser administrador.');
-    }
-
 }

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\YearRequest;
 use App\Http\Resources\YearResource;
 use App\Models\Year;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class YearController extends Controller
 {
@@ -31,12 +33,15 @@ class YearController extends Controller
 
      public function store(YearRequest $request){
 
+        Gate::authorize('create', Year::class);
         Year::create($request->all());
         return response()->json('Nivel académico creado correctamente');
      }
 
      public function update(YearRequest $request,string $id){
+
         $year=Year::findOrFail($id);
+        Gate::authorize('update', $year);
         $yearExiste=Year::where('year',$request->year)->where('descripcion',$request->descripcion)->first();
         if($yearExiste && $year->descripcion !== $request->descripcion || $year->year !== $request->year ){
             return response()->json(['error' => 'Ese Nivel ya está registrado'], 404);
@@ -51,6 +56,7 @@ class YearController extends Controller
 
      public function destroy(string $id){
         $year = Year::findOrFail($id);
+        Gate::authorize('delete', $year);
         if($year->secciones->count() > 0){
             return response()->json(['message' => 'No se puede eliminar el nivel académico porque tiene secciones asignadas'], 403);
         }

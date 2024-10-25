@@ -8,6 +8,7 @@ use App\Http\Resources\SeccionResource;
 use App\Models\Seccion;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SeccionController extends Controller
 {
@@ -66,7 +67,9 @@ class SeccionController extends Controller
     // Crear una sección
     public function store(SeccionRequest $request)
     {
+        Gate::authorize('create', Seccion::class);
         // Crear la sección
+
         $seccion = Seccion::create([
             'name' => $request->name,
             'year_id' => $request->year_id,
@@ -103,7 +106,7 @@ class SeccionController extends Controller
     public function getEstudiantes($id)
     {
         $seccion = Seccion::with('inscripciones')->find($id);
-
+        Gate::authorize('viewStudents', $seccion);
         if (!$seccion) {
             return response()->json(['error' => 'Sección no encontrada.'], 404);
         }
@@ -126,15 +129,11 @@ class SeccionController extends Controller
 
         return response()->json($estudiantes);
     }
-
-
-
-
     // Actualizar una sección
     public function update(SeccionRequest $request, $id)
     {
         $seccion = Seccion::find($id);
-
+        Gate::authorize('update', $seccion);
         if (!$seccion) {
             return response()->json(['mensaje' => 'Sección no encontrada'], 404);
         }
@@ -175,7 +174,7 @@ class SeccionController extends Controller
     public function destroy($id)
     {
         $seccion = Seccion::find($id);
-
+        Gate::authorize('delete', $seccion);
         if (!$seccion) {
             return response()->json(['mensaje' => 'Sección no encontrada'], 404);
         }

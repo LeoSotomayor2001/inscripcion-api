@@ -2,14 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Ano_escolar;
 use App\Models\User;
+use App\Policies\Ano_escolarPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
    
-    
     /**
      * Register any application services.
      */
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->createAdminUserIfNotExists();
+        Gate::policy(Ano_escolar::class, Ano_escolarPolicy::class);
     }
     protected function createAdminUserIfNotExists()
     {
